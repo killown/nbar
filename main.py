@@ -29,12 +29,12 @@ DEFAULT_CONFIG_PATH = XDG_CONFIG_HOME / "nbar"
 GTK_LAYER_SHELL_INSTALL_PATH = Path(
     os.getenv("GTK_LAYER_SHELL_PATH", XDG_DATA_HOME / "lib" / "gtk4-layer-shell")
 )
-NBAR_REPO = "https://github.com/killown/waypanel.git"
+NBAR_REPO = "https://github.com/killown/nbar.git"
 TEMP_DIRS = {
     "gtk_layer_shell": XDG_CACHE_HOME / "gtk4-layer-shell",
     "nbar": XDG_CACHE_HOME / "nbar",
 }
-CONFIG_SUBDIR = "waypanel/config"
+CONFIG_SUBDIR = "nbar/config"
 DEFAULT_SYSTEM_CONFIG = Path(
     os.getenv("NBAR_SYSTEM_CONFIG", "/usr/share/nbar/default-config")
 )

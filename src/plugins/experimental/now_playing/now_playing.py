@@ -176,16 +176,16 @@ def get_plugin_class():
             if not self.current_title and not self.current_pid:
                 return
 
-            view = self.plugin.wf_helper.get_view_by_title(self.current_title)
+            view = self.plugin.niri_helper.get_view_by_title(self.current_title)
             if not view:
-                view = self.plugin.wf_helper.get_view_by_pid(self.current_pid)
+                view = self.plugin.niri_helper.get_view_by_pid(self.current_pid)
 
             if view.get("pid") != self.current_pid:
                 return
 
             if view and "id" in view:
                 self.plugin.ipc.set_focus(view["id"])
-                self.plugin.wf_helper.move_cursor_middle(view["id"])
+                self.plugin.niri_helper.move_cursor_middle(view["id"])
 
         def _on_close_clicked(self, _):
             """
@@ -193,7 +193,7 @@ def get_plugin_class():
             """
             if not self.current_pid:
                 return
-            view = self.plugin.wf_helper.get_view_by_pid(self.current_pid)
+            view = self.plugin.niri_helper.get_view_by_pid(self.current_pid)
             if view and "id" in view:
                 self.plugin.ipc.close_view(view["id"])
 

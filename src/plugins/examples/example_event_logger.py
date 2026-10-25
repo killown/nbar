@@ -1,4 +1,4 @@
-# List of all known Wayfire IPC events to subscribe to
+# List of all known niri IPC events to subscribe to
 ALL_EVENTS = [
     # Emitted when a view gains focus (e.g., user clicks or tabs into it)
     # every view event type will have a view key with the following
@@ -129,7 +129,7 @@ def get_plugin_metadata(_):
         # CRITICAL: Always define dependencies if the current plugin requires certain plugin to be loaded first
         # WARNING: Missing dependencies can cause plugins to fail loading.
         "deps": ["event_manager"],
-        "description": "Monitors and logs all Wayfire IPC events for debugging and tracking purposes.",
+        "description": "Monitors and logs all niri IPC events for debugging and tracking purposes.",
     }
 
 
@@ -151,7 +151,7 @@ def get_plugin_class():
             self.subscribe_to_events()
 
         def subscribe_to_events(self):
-            """Subscribe to all Wayfire IPC events"""
+            """Subscribe to all niri IPC events"""
             if "event_manager" not in self._panel_instance.plugin_loader.plugins:
                 self.logger.error(
                     "Event Manager Plugin is not loaded. Cannot subscribe to events."
@@ -168,19 +168,19 @@ def get_plugin_class():
                     self.logger.error(f"Failed to subscribe to event {event}: {e}")
 
         def handle_event(self, event_data):
-            """Handle incoming events from Wayfire IPC"""
+            """Handle incoming events from niri IPC"""
             self.logger.info(event_data)
 
         def code_explanation(self):
             """
-            This plugin acts as a comprehensive event listener for the Wayfire compositor.
+            This plugin acts as a comprehensive event listener for the niri compositor.
             It subscribes to a predefined list of known Inter-Process Communication (IPC)
             events and logs their data.
 
             Its core logic is centered on **event subscription and passive monitoring**:
 
             1.  **Event List**: It defines a static list, `ALL_EVENTS`, which contains
-                the names of all relevant Wayfire IPC events.
+                the names of all relevant niri IPC events.
             2.  **Subscription Loop**: In the `subscribe_to_events` method, it iterates
                 through this list and uses the `event_manager` to subscribe the
                 `handle_event` method as a callback for each event.
@@ -188,7 +188,7 @@ def get_plugin_class():
                 callback. When any of the subscribed events occur, the system sends
                 the event data to this method, which logs the entire payload.
             4.  **Purpose**: This makes it a valuable background tool for debugging
-                and understanding the flow of events within the Wayfire environment,
+                and understanding the flow of events within the niri environment,
                 without a visible UI.
             """
             return self.code_explanation.__doc__

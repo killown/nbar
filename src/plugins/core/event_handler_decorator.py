@@ -1,6 +1,6 @@
 def subscribe_to_event(event_type):
     """
-    A decorator to register event handlers for Wayfire events.
+    A decorator to register event handlers for niri events.
     Usage:
         @subscribe_to_event("view-focused")
         def on_view_focused(self, event):

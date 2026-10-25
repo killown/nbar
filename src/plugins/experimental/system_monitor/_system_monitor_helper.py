@@ -24,7 +24,7 @@ SELECT_EVENT_WATCH_SCRIPT: str = f"""
 import sys
 import os
 try:
-    from wayfire import WayfireSocket
+    from src.core.compositor.ipc import IPC
     from rich.pretty import pprint
     from rich.console import Console
     console = Console()
@@ -51,7 +51,7 @@ while selected is None:
         console.print("\\nCancelled.")
         sys.exit(0)
 try:
-    sock = WayfireSocket()
+    sock = IPC()
     sock.watch([selected])
     console.print(f"[bold]Watching event:[/bold] {{selected}} (press Ctrl+C to exit)")
     console.print("=" * 50)
@@ -294,7 +294,7 @@ class SystemMonitorHelpers:
 
     def open_kitty_with_rich_events_view(self, *_) -> None:
         """
-        Launches a live event monitor using rich and WayfireSocket.
+        Launches a live event monitor using rich and the panel IPC wrapper.
         """
         import shlex
 
@@ -303,10 +303,10 @@ class SystemMonitorHelpers:
             return
 
         code = (
-            "from wayfire import WayfireSocket; "
+            "from src.core.compositor.ipc import IPC; "
             "from rich.pretty import pprint; "
             "from rich.console import Console; "
-            "console = Console(); sock=WayfireSocket(); sock.watch(); "
+            "console = Console(); sock=IPC(); sock.watch(); "
             "import itertools; "
             "[(pprint(sock.read_next_event(), console=console), print()) for _ in itertools.repeat(None)]"
         )
@@ -314,7 +314,7 @@ class SystemMonitorHelpers:
 
     def open_kitty_with_ipython_view(self, view: dict[str, any]) -> None:
         """
-        Opens an interactive session to inspect a specific Wayfire view.
+        Opens an interactive session to inspect a specific niri view.
 
         Args:
             view: Dictionary containing view metadata (specifically 'id').
@@ -328,8 +328,8 @@ class SystemMonitorHelpers:
 
         view_id = view["id"]
         code = (
-            "from wayfire import WayfireSocket; "
-            "sock = WayfireSocket(); "
+            "from src.core.compositor.ipc import IPC; "
+            "sock = IPC(); "
             f"view = sock.get_view({view_id}); "
         )
         self.run_cmd(f"{term} {flag} ipython -i -c {shlex.quote(code)}")

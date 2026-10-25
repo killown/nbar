@@ -241,7 +241,14 @@ class GtkHelpers:
                     return pattern
 
             # 5. Fuzzy Search
-            all_icons = icon_theme.get_icon_names()
+            # get_icon_names() allocates thousands of strings and the
+            # normalization below is pure Python; build both once.
+            if getattr(self, "_all_icons_cache", None) is None:
+                self._all_icons_cache = icon_theme.get_icon_names()
+                self._norm_icons_cache = [
+                    rapidfuzz.utils.default_process(n) for n in self._all_icons_cache
+                ]
+            all_icons = self._all_icons_cache
             fuzzy_scorers = [
                 rapidfuzz.fuzz.token_set_ratio,
                 rapidfuzz.fuzz.partial_ratio,
@@ -267,8 +274,7 @@ class GtkHelpers:
                 return best_match_name
 
             # 6. Substring Match
-            for icon_name in all_icons:
-                norm_icon = rapidfuzz.utils.default_process(icon_name)
+            for icon_name, norm_icon in zip(all_icons, self._norm_icons_cache):
                 if norm_arg in norm_icon or norm_icon in norm_arg:
                     self.icon_cache[argument] = icon_name
                     return icon_name

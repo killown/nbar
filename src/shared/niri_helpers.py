@@ -3,20 +3,19 @@ import psutil
 import sys
 from typing import Dict, Optional, Tuple, Union, Any
 from gi.repository import GLib  # pyright: ignore
-from pathlib import Path
 import operator
 
 
-class WayfireHelpers:
+class NiriHelpers:
     """
-    A class containing helper methods for interacting with the Wayfire IPC.
+    A class containing helper methods for interacting with the niri IPC.
     """
 
     def __init__(self, panel_instance):
         """
-        Initializes the WayfireHelpers instance with an IPC object.
+        Initializes the NiriHelpers instance with an IPC object.
         Args:
-            ipc: An object representing the Wayfire IPC connection, which
+            ipc: An object representing the niri IPC connection, which
                  is expected to have a `list_views()` method.
         """
         self.ipc = panel_instance.ipc
@@ -46,71 +45,6 @@ class WayfireHelpers:
         except Exception as e:
             self.logger.error(
                 f"An error occurred while checking for fullscreen views: {e}"
-            )
-            return False
-
-    def ping_wayfire_ipc(self):
-        try:
-            self.ipc.ping()
-            return True
-        except Exception as e:
-            self.logger.error(f"Failed to ping Wayfire IPC: {e}")
-        return False
-
-    def find_wayfire_lib(self, lib_name: str) -> bool:
-        """
-        Check if a specific shared library is loaded by the Wayfire process.
-        Args:
-            lib_name (str): The name of the shared library to check.
-        Returns:
-            bool: True if the library is found in the Wayfire process, False otherwise.
-        """
-        try:
-            return self.check_lib_in_wayfire(lib_name)
-        except Exception as e:
-            self.logger.error(
-                f"Unexpected error while finding library '{lib_name}' in Wayfire: {e}",
-                exc_info=True,
-            )
-            return False
-
-    def check_lib_in_wayfire(self, lib_name: str) -> bool:
-        """
-        Check if a specific shared library is loaded by the Wayfire process.
-        Args:
-            lib_name (str): The name of the shared library to check.
-        Returns:
-            bool: True if the library is found in the Wayfire process, False otherwise.
-        """
-        try:
-            if not lib_name or not isinstance(lib_name, str):
-                self.logger.warning(f"Invalid or missing library name: {lib_name}")
-                return False
-            pid = self.get_wayfire_pid()
-            if not pid:
-                self.logger.info("Wayfire process not found.")
-                return False
-            self.logger.debug(
-                f"Checking for library '{lib_name}' in Wayfire process (PID: {pid})"
-            )
-            libs = self.list_libs_in_process(pid)
-            if not libs:
-                self.logger.debug(
-                    f"No shared libraries found for Wayfire process (PID: {pid})"
-                )
-                return False
-            for lib in libs:
-                if lib_name in lib:
-                    self.logger.debug(
-                        f"Found library '{lib_name}' in Wayfire process: {lib}"
-                    )
-                    return True
-            self.logger.debug(f"Library '{lib_name}' not found in Wayfire process.")
-            return False
-        except Exception as e:
-            self.logger.error(
-                f"Unexpected error while checking for library '{lib_name}' in Wayfire process: {e}",
-                exc_info=True,
             )
             return False
 
@@ -145,39 +79,6 @@ class WayfireHelpers:
                 exc_info=True,
             )
         return libs
-
-    def get_wayfire_pid(self) -> Optional[int]:
-        """
-        Retrieve the PID of the Wayfire compositor process.
-        Returns:
-            Optional[str]: The PID of the Wayfire process if found, otherwise None.
-        """
-        try:
-            for entry in os.listdir("/proc"):
-                if not entry.isdigit():
-                    continue
-                try:
-                    comm_file_path = f"/proc/{entry}/comm"
-                    with open(comm_file_path, "r") as comm_file:
-                        command_name = comm_file.read().strip()
-                        if "wayfire" in command_name.lower():
-                            self.logger.debug(
-                                f"Found Wayfire process with PID: {entry}"
-                            )
-                            return int(entry)
-                except IOError as e:
-                    self.logger.warning(
-                        f"Failed to read /proc/{entry}/comm. Details: {e}"
-                    )
-                    continue
-            self.logger.info("No Wayfire process found.")
-            return None
-        except Exception as e:
-            self.logger.error(
-                f"Unexpected error while retrieving Wayfire PID: {e}",
-                exc_info=True,
-            )
-            return None
 
     def send_view_to_output(self, view_id, direction=None, toggle_scale_off=False):
         """
@@ -470,7 +371,7 @@ class WayfireHelpers:
 
     def find_empty_workspace(self) -> Optional[tuple]:
         """
-        Find an empty workspace using wf_utils.get_workspaces_without_views().
+        Find an empty workspace using the IPC workspace list.
         Returns:
             Optional[tuple]: (x, y) coordinates of the first empty workspace,
                              or None if no empty workspace is found.
@@ -549,85 +450,6 @@ class WayfireHelpers:
         view_ids = self.ipc.get_views_from_active_workspace()
         [self.ipc.set_tiling_maximized(view_id, should_maxmize) for view_id in view_ids]
 
-    def get_wayctl_path(self):
-        """
-        Locate the path to the _wayctl.py script by traversing the directory tree
-        relative to the current file's location.
-        """
-        try:
-            current_dir = Path(__file__).resolve().parent
-            wayctl_path = (
-                current_dir
-                / ".."
-                / ".."
-                / "src"
-                / "plugins"
-                / "utils"
-                / "tools"
-                / "_wayctl.py"
-            )
-            if not wayctl_path.exists():
-                raise FileNotFoundError(f"wayctl.py not found at {wayctl_path}")
-            return str(wayctl_path)
-        except (FileNotFoundError, RuntimeError) as e:
-            raise RuntimeError(f"Failed to locate wayctl.py: {e}") from e
-
-    def is_keybind_used(self, keybinding):
-        """
-        Search line-by-line in the Wayfire config file for any line that ends with
-        the given keybinding (after optional '=' and whitespace), after normalizing whitespace.
-        Returns True if found, False otherwise.
-        """
-        config_file = os.getenv(
-            "WAYFIRE_CONFIG_FILE", os.path.expanduser("~/.config/wayfire.ini")
-        )
-        if not os.path.exists(config_file):
-            self.logger.error(f"Config file not found: {config_file}")
-            return False
-        try:
-            with open(config_file, "r", encoding="utf-8") as f:
-                for line_number, line in enumerate(f, start=1):
-                    stripped_line = line.strip()
-                    if stripped_line.startswith("#"):
-                        continue
-                    if "=" not in stripped_line:
-                        continue
-                    key_part = stripped_line.split("=", 1)[1].strip()
-                    normalized_key_part = " ".join(key_part.split())
-                    normalized_target = " ".join(keybinding.strip().split())
-                    if normalized_key_part == normalized_target:
-                        self.logger.error(
-                            f"Pattern '{keybinding}' matched on line {line_number}: {stripped_line}"
-                        )
-                        return True
-            return False
-        except Exception as e:
-            self.logger.error(f"Error reading config file: {e}")
-            return False
-
-    def register_wayctl_binding(self, keybind, keybind_fallback, args):
-        if self.is_keybind_used(keybind):
-            if keybind_fallback is None:
-                return
-            keybind = keybind_fallback
-            if self.is_keybind_used(keybind):
-                self.logger.warning(
-                    f"Keybind '{keybind}' already used. Skipping registration."
-                )
-                return
-
-        venv_python = os.getenv("NBAR_VENV", "python3")
-        wayctl_path = self.get_wayctl_path()
-
-        self.logger.info(f"Registering keybinding: {keybind} via {venv_python}")
-
-        self.ipc.register_binding(
-            binding=keybind,
-            command=f"{venv_python} {wayctl_path} {args}",
-            exec_always=True,
-            mode="normal",
-        )
-
     def view_focus_effect_selected(
         self, view: dict, alpha: float = 1.0, selected: bool = False
     ) -> None:
@@ -658,29 +480,23 @@ class WayfireHelpers:
                 if val:
                     self.ipc.set_view_alpha(view_id, float(str(val).replace(",", ".")))
 
-    def is_plugin_enabled(self, plugin_name: str) -> bool:
-        """
-        Check if a Wayfire plugin is enabled.
-        """
-        return plugin_name in self.ipc.get_option_value("core/plugins")["value"]
-
     def find_redirection_file(self, process_name):
         """
         Finds the file path to which the standard output (file descriptor 1)
         of a running process is redirected.
         """
         STDOUT_FD = 1
-        wayfire_processes = [
+        matching_processes = [
             proc
             for proc in psutil.process_iter(["pid", "name"])
             if proc.info["name"] and process_name.lower() in proc.info["name"].lower()
         ]
-        if not wayfire_processes:
+        if not matching_processes:
             self.logger.info(
                 f"Error: No running process found with the name '{process_name}'."
             )
             return
-        process = wayfire_processes[0]
+        process = matching_processes[0]
         pid = process.info["pid"]
         try:
             if sys.platform.startswith("linux") or sys.platform.startswith("darwin"):
@@ -775,7 +591,7 @@ class WayfireHelpers:
 
     def get_view_by_pid(self, pid: int) -> dict | None:
         """
-        Retrieves detailed Wayfire view metadata for a specific Process ID.
+        Retrieves detailed niri view metadata for a specific Process ID.
 
         Args:
             pid (int): The process ID to search for.

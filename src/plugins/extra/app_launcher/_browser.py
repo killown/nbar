@@ -152,7 +152,7 @@ class FlathubBrowser(Gtk.ApplicationWindow):
                     def center_later():
                         found = self.plugin.view_id_found(title="Flatpak Installer")
                         if found:
-                            self.plugin.wf_helper.center_view_on_output(
+                            self.plugin.niri_helper.center_view_on_output(
                                 found[0], 800, 710
                             )
 

@@ -6,7 +6,7 @@ class DockLogic:
         self.p = plugin
 
     def is_overview_enabled(self):
-        """Niri equivalent to Wayfire's Scale."""
+        """Reports whether the niri overview is available."""
         # Overview is a core feature in Niri, always assume True
         # unless checking specific state via IPC.
         return True

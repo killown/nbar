@@ -1,7 +1,7 @@
 def get_plugin_metadata(_):
     about = (
         "This plugin provides a graphical user interface for managing the",
-        "Mullvad VPN client directly from the Wayfire panel.",
+        "Mullvad VPN client directly from the niri panel.",
     )
     return {
         "id": "org.nbar.plugin.mullvad",

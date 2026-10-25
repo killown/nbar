@@ -132,7 +132,7 @@ def handle_ipc_error(func):
 @apply_type_checked
 class IPC:
     """
-    Wrapper around pyniri.NiriSocket to provide Wayfire-compatible shims for Shellown.
+    Wrapper around pyniri.NiriSocket that exposes the IPC surface used by the panel.
     """
 
     def __init__(self):

@@ -63,8 +63,4 @@ def translate_ipc(ev: dict, ipc_server_instance):
         # Pass-through for non-standard events
         return {"event": etype, "payload": payload}
 
-    if compositor == "wayfire":
-        ipc_server_instance.compositor = "wayfire"
-        return ev
-
     return None

@@ -107,7 +107,6 @@
    ========================================================================== */
 
 .app-launcher-footer-container {
-
   border-top: 1px solid var(--color-separator-line);
   border-bottom-left-radius: var(--radius-xl);
   border-bottom-right-radius: var(--radius-xl);
@@ -134,31 +133,33 @@
 .app-launcher-footer-item {
   background-color: var(--color-bg-deep);
   background-image: linear-gradient(
-    to bottom, 
-    rgba(255, 255, 255, 0.05) 0%, 
-    rgba(0, 0, 0, 0) 50%, 
+    to bottom,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(0, 0, 0, 0) 50%,
     rgba(0, 0, 0, 0.1) 100%
   );
-  box-shadow: 
-    0 4px 6px -1px rgba(0, 0, 0, 0.4), 
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.1),
     inset 0 -2px 4px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(0, 0, 0, 0.25);
   border-radius: 6px;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
   cursor: pointer;
   padding: 5px;
 }
 
 .app-launcher-footer-item:active {
   transform: translateY(1px);
-  box-shadow: 
-    0 1px 2px rgba(0, 0, 0, 0.3), 
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.3),
     inset 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .app-launcher-footer-switch {
-background-color: var(--theme-fg-label-secondary);
+  background-color: var(--theme-fg-label-secondary);
 }
 
 /* ==========================================================================
@@ -180,19 +181,19 @@ window.dialog > box,
   font-weight: var(--font-weight-bold);
 }
 
-/* Waypanel Installer Theme */
-window#waypanel-installer,
-window#waypanel-installer > box {
+/* nbar Installer Theme */
+window#nbar-installer,
+window#nbar-installer > box {
   background-color: var(--color-bg-popover);
   color: var(--theme-fg-label-primary);
 }
 
-window#waypanel-installer headerbar {
+window#nbar-installer headerbar {
   background-color: var(--color-bg-window);
   border-bottom: 1px solid var(--theme-decoration-separator);
 }
 
-window#waypanel-installer .card {
+window#nbar-installer .card {
   background-color: var(--theme-bg-view-secondary);
   border: 1px solid var(--theme-decoration-separator);
   border-radius: var(--radius-l);

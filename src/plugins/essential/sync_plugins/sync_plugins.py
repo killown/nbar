@@ -42,7 +42,7 @@ def get_plugin_class():
             self._is_syncing = False
             self.get_plugin_setting_add_hint(
                 ["source_folders"],
-                ["~/Git/waypanel-plugins", "~/Git/waypanel-plugins-extra/"],
+                ["~/Git/nbar-plugins", "~/Git/nbar-plugins-extra/"],
                 "List of absolute paths to folders containing plugins to be synced.",
             )
 

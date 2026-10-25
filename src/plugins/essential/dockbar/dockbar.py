@@ -75,7 +75,7 @@ def get_plugin_class():
             self.left_click_toggles_scale = self.get_plugin_setting_add_hint(
                 ["actions", "left_click_toggles_scale"],
                 True,
-                "If True, a left-click on a running app toggles Wayfire's 'scale' plugin.",
+                "If True, a left-click on a running app toggles the niri overview.",
             )
             self.middle_click_to_empty_workspace = self.get_plugin_setting_add_hint(
                 ["actions", "middle_click_to_empty_workspace"],

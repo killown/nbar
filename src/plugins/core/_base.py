@@ -9,7 +9,7 @@ import pathlib
 from src.core import create_panel
 from src.shared.path_handler import PathHandler
 from src.shared.notify_send import Notifier
-from src.shared.wayfire_helpers import WayfireHelpers
+from src.shared.niri_helpers import NiriHelpers
 from src.shared.gtk_helpers import GtkHelpers
 from src.shared.data_helpers import DataHelpers
 from src.shared.config_handler import ConfigHandler
@@ -121,7 +121,7 @@ class BasePlugin:
     _logger_adapter: PluginLogAdapter
     _path_handler: PathHandler
     _notifier: Notifier
-    _wf_helper: WayfireHelpers
+    _niri_helper: NiriHelpers
     _gtk_helper: GtkHelpers
     _install_helper: InstallHelpers
     _data_helper: DataHelpers
@@ -146,7 +146,7 @@ class BasePlugin:
         self._logger_adapter = PluginLogAdapter(panel_instance.logger)
         self._path_handler = PathHandler(panel_instance)
         self._notifier = Notifier()
-        self._wf_helper = WayfireHelpers(panel_instance)
+        self._niri_helper = NiriHelpers(panel_instance)
         self._gtk_helper = GtkHelpers(panel_instance)
         self._install_helper = InstallHelpers(panel_instance)
         self._data_helper = DataHelpers()
@@ -441,7 +441,7 @@ class BasePlugin:
 
     @property
     def ipc(self) -> Any:
-        """IPC client for Wayfire communication."""
+        """IPC client for niri communication."""
         return self._ipc
 
     @property
@@ -506,9 +506,9 @@ class BasePlugin:
         return self._notifier
 
     @property
-    def wf_helper(self) -> WayfireHelpers:
-        """Read-only access to the WayfireHelpers instance."""
-        return self._wf_helper
+    def niri_helper(self) -> NiriHelpers:
+        """Read-only access to the NiriHelpers instance."""
+        return self._niri_helper
 
     @property
     def gtk_helper(self) -> GtkHelpers:
@@ -667,8 +667,8 @@ class BasePlugin:
 
     @property
     def is_view_valid(self):
-        """Read-only alias for self._wf_helper.is_view_valid"""
-        return self.wf_helper.is_view_valid
+        """Read-only alias for self._niri_helper.is_view_valid"""
+        return self.niri_helper.is_view_valid
 
     def check_dependencies(self) -> bool:
         """Check if all dependencies are loaded"""

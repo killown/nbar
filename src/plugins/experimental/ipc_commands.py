@@ -43,7 +43,7 @@ def get_plugin_class():
                 if hasattr(ipc_server, "clients")
                 else 0,
                 "current_timestamp": int(time.time()),
-                "wayfire_connected": ipc_server.is_socket_active()
+                "niri_connected": ipc_server.is_socket_active()
                 if hasattr(ipc_server, "is_socket_active")
                 else False,
             }

@@ -203,14 +203,14 @@ class TaskbarMenu:
         self.menu.popdown()
 
     def _on_menu_move_next_clicked(self, _):
-        self.plugin.wf_helper.send_view_to_output(self.menu.active_view_id, None, True)  # pyright: ignore
+        self.plugin.niri_helper.send_view_to_output(self.menu.active_view_id, None, True)  # pyright: ignore
         self.menu.popdown()
 
     def _check_hanging_process(self, vid):
-        from src.shared.wayfire_helpers import WayfireHelpers
+        from src.shared.niri_helpers import NiriHelpers
 
-        wf_helper = WayfireHelpers(self.plugin._panel_instance)
-        wf_helper._check_hanging_process(vid)
+        niri_helper = NiriHelpers(self.plugin._panel_instance)
+        niri_helper._check_hanging_process(vid)
 
     def _on_menu_close_clicked(self, _):
         from gi.repository import GLib

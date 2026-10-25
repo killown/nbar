@@ -180,7 +180,11 @@ def get_plugin_class():
             """
             Starts polling GLib sources.
             """
-            self.glib.timeout_add(1000, self.fetch_and_update_system_data)
+            # Never stack timers if the popover is toggled quickly.
+            self.stop_system_updates()
+            self._first_tick_id = self.glib.timeout_add(
+                1000, self.fetch_and_update_system_data
+            )
             self.update_timeout_id = self.glib.timeout_add_seconds(
                 self.helper.update_interval, self.fetch_and_update_system_data
             )
@@ -189,12 +193,14 @@ def get_plugin_class():
             """
             Cleans up polling sources.
             """
-            if self.update_timeout_id:
-                try:
-                    self.glib.source_remove(self.update_timeout_id)
-                except Exception:
-                    pass
-                self.update_timeout_id = None
+            for attr in ("_first_tick_id", "update_timeout_id"):
+                sid = getattr(self, attr, None)
+                if sid:
+                    try:
+                        self.glib.source_remove(sid)
+                    except Exception:
+                        pass
+                    setattr(self, attr, None)
 
         def update_metric(
             self,
@@ -267,27 +273,51 @@ def get_plugin_class():
                 return mapping[driver]
             return driver.replace("_", " ").title()
 
+        def _refresh_nvidia_async(self):
+            """Runs nvidia-smi off the UI thread; results land in a cache."""
+            import shutil
+            import threading
+
+            if getattr(self, "_nv_missing", False) or getattr(
+                self, "_nv_inflight", False
+            ):
+                return
+            if shutil.which("nvidia-smi") is None:
+                self._nv_missing = True
+                return
+            self._nv_inflight = True
+
+            def work():
+                try:
+                    nv = subprocess.run(
+                        [
+                            "nvidia-smi",
+                            "--query-gpu=name,utilization.gpu,memory.used,memory.total",
+                            "--format=csv,noheader,nounits",
+                        ],
+                        capture_output=True,
+                        text=True,
+                        check=True,
+                        timeout=5,
+                    )
+                    self._nv_cache = [x.strip() for x in nv.stdout.strip().split(",")]
+                except Exception:
+                    self._nv_cache = None
+                finally:
+                    self._nv_inflight = False
+
+            threading.Thread(target=work, name="NvidiaSmi", daemon=True).start()
+
         def add_gpu(self):
             """
-            Handles multi-vendor GPU status polling synchronously.
+            Handles multi-vendor GPU status polling without blocking the UI.
             """
-            try:
-                nv = subprocess.run(
-                    [
-                        "nvidia-smi",
-                        "--query-gpu=name,utilization.gpu,memory.used,memory.total",
-                        "--format=csv,noheader,nounits",
-                    ],
-                    capture_output=True,
-                    text=True,
-                    check=True,
-                )
-                p = nv.stdout.strip().split(",")
-                self.update_metric("GPU", "Vendor", f"NVIDIA {p[0].strip()}")
-                self.update_metric("GPU", "Load", f"{p[1].strip()}%")
-                self.update_metric("GPU", "VRAM", f"{p[2].strip()} / {p[3].strip()} MB")
-            except Exception:
-                pass
+            self._refresh_nvidia_async()
+            p = getattr(self, "_nv_cache", None)
+            if p and len(p) >= 4:
+                self.update_metric("GPU", "Vendor", f"NVIDIA {p[0]}")
+                self.update_metric("GPU", "Load", f"{p[1]}%")
+                self.update_metric("GPU", "VRAM", f"{p[2]} / {p[3]} MB")
             try:
                 import pyamdgpuinfo
 

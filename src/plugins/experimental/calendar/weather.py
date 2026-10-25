@@ -180,7 +180,7 @@ def get_plugin_class():
             """
             lat, lon = self.coordinates
             url = f"https://api.met.no/weatherapi/locationforecast/2.0/complete?lat={lat}&lon={lon}"
-            headers = {"User-Agent": "NbarWeatherPlugin/1.2 (github.com/waypanel)"}
+            headers = {"User-Agent": "NbarWeatherPlugin/1.2 (github.com/nbar)"}
             try:
                 response = await self.asyncio.to_thread(
                     self.requests.get, url, headers=headers, timeout=10

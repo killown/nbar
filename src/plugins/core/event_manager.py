@@ -54,8 +54,10 @@ def get_plugin_class():
                 for event in self.ipc.sock.watch():
                     if self._stop_event.is_set():
                         break
-                    # EXTREME DEBUG: Print exactly what comes off the wire
-                    self.logger.debug(f"[RAW NIRI] {json.dumps(event)}")
+                    # Only serialize the event when DEBUG is actually enabled;
+                    # the f-string used to run json.dumps on every single event.
+                    if self.logger.isEnabledFor(10):
+                        self.logger.debug(f"[RAW NIRI] {json.dumps(event)}")
                     self._dispatch_niri_event(event)
             except Exception as e:
                 self.logger.error(f"Event watcher crashed: {e}", exc_info=True)
@@ -67,6 +69,15 @@ def get_plugin_class():
             event_type = next(iter(niri_event))
             payload = niri_event[event_type]
             internal_type = self._event_map.get(event_type, event_type)
+
+            # Overview events are renamed below; everything else keeps the
+            # mapped name. Bail out early when nobody listens so the GTK main
+            # loop is not woken up for the many events nobody consumes.
+            if (
+                event_type not in ("OverviewActivated", "OverviewDeactivated")
+                and not self.event_subscribers.get(internal_type)
+            ):
+                return
 
             # 1. Identify if it's an Overview event (Niri native)
             if event_type == "OverviewActivated":

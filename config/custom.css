@@ -9,8 +9,8 @@
    HOW TO USE:
    1. To override a style, uncomment the relevant block.
    2. You can find all available CSS classes by extracting and inspecting 
-      the .css files located in your Waypanel installation directory:
-      ~/.../waypanel/resources/themes/css/ (or your plugin directories).
+      the .css files located in your Nbar installation directory:
+      ~/.../nbar/resources/themes/css/ (or your plugin directories).
    3. Changes are detected automatically by the CSS Generator plugin.
    ========================================================================== */
 
@@ -24,7 +24,7 @@
 */
 
 /* --- Example: Panel Transparency ---
-.waypanel-window {
+.nbar-window {
     background-color: rgba(0, 0, 0, 0.5);
 }
 */

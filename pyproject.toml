@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "nbar"
 version = "0.9.8.1"
 authors = [{ name = "killown", email = "systemofdown@gmail.com" }]
-description = "A Wayfire panel that behaves like a shell"
+description = "A niri panel that behaves like a shell"
 readme = "README.md"
 requires-python = ">=3.12"
 license = { file = "LICENSE" }
@@ -15,7 +15,7 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
 ]
-urls = { "Homepage" = "https://github.com/killown/waypanel" }
+urls = { "Homepage" = "https://github.com/killown/nbar" }
 
 [project.optional-dependencies]
 dev = ["pygobject-stubs[Gtk4,Gdk]"]

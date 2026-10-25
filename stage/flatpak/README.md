@@ -1,6 +1,6 @@
-# Waypanel Flatpak
+# Nbar Flatpak
 
-This documentation covers the build and deployment process for the **Waypanel** Flatpak manifest. This manifest bundles Python 3.13, GTK4 Layer Shell, and essential Wayland utilities.
+This documentation covers the build and deployment process for the **Nbar** Flatpak manifest. This manifest bundles Python 3.13, GTK4 Layer Shell, and essential Wayland utilities.
 
 ## Prerequisites
 
@@ -26,29 +26,29 @@ Follow these steps to compile native modules and bundle the Python environment.
 
 This command compiles `gtk4-layer-shell`, `playerctl`, and `wl-clipboard`, then installs the Python package stack via pip.
 
-    flatpak-builder --force-clean --user build-dir org.waypanel.Waypanel.yaml
+    flatpak-builder --force-clean --user build-dir org.nbar.Nbar.yaml
 
 ### 2\. Install Locally
 
 Install the resulting build into your user's Flatpak installation:
 
-    flatpak-builder --user --install --force-clean build-dir org.waypanel.Waypanel.yaml
+    flatpak-builder --user --install --force-clean build-dir org.nbar.Nbar.yaml
 
-## Running Waypanel
+## Running Nbar
 
 Launch the panel from the sandboxed environment:
 
-    flatpak run org.waypanel.Waypanel
+    flatpak run org.nbar.Nbar
 
 ## Sandbox Configuration
 
-Waypanel is configured with specific permissions to interact with the host Wayland compositor:
+Nbar is configured with specific permissions to interact with the host Wayland compositor:
 
 - **Graphics & Sound:** `wayland`, `fallback-x11`, `dri`, and `pulseaudio`.
 - **Filesystem Access:**
   - `host:ro`: Read-only access to host system icons and desktop files.
-  - `xdg-config/waypanel`: Custom configuration storage.
-  - `~/.local/share/waypanel`: Persistent data and theme assets.
+  - `xdg-config/nbar`: Custom configuration storage.
+  - `~/.local/share/nbar`: Persistent data and theme assets.
 - **D-Bus Communication:**
   - `org.freedesktop.Notifications`: System notification support.
   - `org.mpris.MediaPlayer2.*`: Media player controls.
@@ -58,4 +58,4 @@ Waypanel is configured with specific permissions to interact with the host Wayla
 
 To enter a shell within the build environment to verify `PYTHONPATH` or library paths:
 
-    flatpak-builder --run build-dir org.waypanel.Waypanel.yaml sh
+    flatpak-builder --run build-dir org.nbar.Nbar.yaml sh

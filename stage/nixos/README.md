@@ -1,6 +1,6 @@
-# Waypanel Nix Package
+# Nbar Nix Package
 
-This documentation provides details for the **Waypanel** Nix derivation, a highly customizable status bar for Wayland compositors.
+This documentation provides details for the **Nbar** Nix derivation, a highly customizable status bar for Wayland compositors.
 
 ## Included Features
 
@@ -22,20 +22,20 @@ To compile the package and generate a `result` symlink in your current directory
 
 You can execute the panel directly from the Nix store path without installing it system-wide:
 
-    ./result/bin/waypanel
+    ./result/bin/nbar
 
 ### 3\. Installation on NixOS
 
-To add Waypanel to your permanent system configuration, reference the derivation in your `environment.systemPackages`:
+To add Nbar to your permanent system configuration, reference the derivation in your `environment.systemPackages`:
 
     # configuration.nix
     { pkgs, ... }:
     let
-      waypanel = pkgs.callPackage ./path/to/waypanel.nix {};
+      nbar = pkgs.callPackage ./path/to/nbar.nix {};
     in
     {
       environment.systemPackages = [
-        waypanel
+        nbar
       ];
     }
 

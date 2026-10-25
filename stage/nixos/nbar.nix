@@ -45,13 +45,13 @@
 }:
 
 buildPythonPackage rec {
-  pname = "waypanel";
+  pname = "nbar";
   version = "unstable-2024-01-18";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "killown";
-    repo = "waypanel";
+    repo = "nbar";
     rev = "master";
     hash = "sha256-s2Z4Nz/kq8ZDYs/sJ5GKbPyNOhNaSA6UENfaVFv/oGo=";
   };
@@ -89,9 +89,9 @@ buildPythonPackage rec {
 
   meta = with lib; {
     description = "A highly customizable status bar for Wayland compositors";
-    homepage = "https://github.com/killown/waypanel";
+    homepage = "https://github.com/killown/nbar";
     license = licenses.mit;
     platforms = platforms.linux;
-    mainProgram = "waypanel";
+    mainProgram = "nbar";
   };
 }

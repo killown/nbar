@@ -6,7 +6,7 @@
 default_config = {
     "_section_hint": (
         "General configuration settings for Nbar, a panel "
-        "for Wayland compositors like Wayfire and Sway."
+        "for the niri Wayland compositor."
     ),
     "plugins": {
         "_section_hint": ("Configuration for loading and managing Nbar plugins."),
@@ -135,12 +135,6 @@ default_config = {
             "A plugin to quickly search and open files from a configured directory, using a specified editor based on file extension"
         ),
     },
-    "org.nbar.plugin.wayfire_plugins": {
-        "_section_hint": (
-            "Settings for Wayfire-specific plugin integration and status updates."
-        ),
-        "hide_in_systray": True,
-    },
     "org.nbar.plugin.notes": {
         "_section_hint": (
             "Configuration for the Quick Notes plugin, allowing users to save and view short text entries."
@@ -262,57 +256,15 @@ default_config = {
             "scripts or system commands."
         ),
         "hide_in_systray": False,
-        "Wayfire": {
-            "_section_hint": (
-                "A custom submenu for Wayfire-related scripts and commands."
-            ),
+        "Tools": {
+            "_section_hint": ("A custom submenu for scripts and commands."),
             "icon": "dialog-scripts",
             "icon_hint": "Icon for this specific submenu entry.",
             "items": [
                 {
-                    "name": "Update and install wayfire",
-                    "name_hint": "The display name for the menu item.",
-                    "cmd": "sh $HOME/Scripts/wayfire/update-wayfire.sh",
-                    "cmd_hint": (
-                        "The **full shell command** that runs when this "
-                        "menu item is clicked."
-                    ),
-                },
-                {
-                    "name": "Run wayfire benchmark",
-                    "name_hint": "The display name for the menu item.",
-                    "cmd": "sh $HOME/Scripts/wayfire/wayfire-headless-bench.sh",
-                    "cmd_hint": (
-                        "The **full shell command** that runs when this "
-                        "menu item is clicked."
-                    ),
-                },
-                {
-                    "name": "Patch wayfire and install",
-                    "name_hint": "The display name for the menu item.",
-                    "cmd": (
-                        'kitty -e bash -c "cd $HOME/Git/wayfire/; '
-                        "$HOME/Scripts/wayfire/patch.apply; "
-                        '$HOME/Scripts/wayfire/install"'
-                    ),
-                    "cmd_hint": (
-                        "The **full shell command** that runs when this "
-                        "menu item is clicked."
-                    ),
-                },
-                {
                     "name": "Wayland Color Picker",
                     "name_hint": "The display name for the menu item.",
                     "cmd": "wl-color-picker",
-                    "cmd_hint": (
-                        "The **full shell command** that runs when this "
-                        "menu item is clicked."
-                    ),
-                },
-                {
-                    "name": "Turn ON/OFF DP-2",
-                    "name_hint": "The display name for the menu item.",
-                    "cmd": "python $HOME/Scripts/wayfire/output_dp_2.py",
                     "cmd_hint": (
                         "The **full shell command** that runs when this "
                         "menu item is clicked."

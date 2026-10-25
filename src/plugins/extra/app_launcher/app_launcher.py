@@ -460,7 +460,7 @@ def get_plugin_class():
             if self.popover_launcher:
                 self.popover_launcher.popdown()  # pyright: ignore
 
-        def view_id_found(self, title="Wayfire Configuration"):
+        def view_id_found(self, title="Niri Configuration"):
             return [
                 i["id"]
                 for i in self.ipc.list_views()
@@ -468,7 +468,7 @@ def get_plugin_class():
             ]
 
         def launch_config_viewer(self):
-            config_viewer = self.plugins.get("wayfire_config_viewer")
+            config_viewer = self.plugins.get("niri_config_viewer")
             if hasattr(config_viewer, "window"):
                 # set the view focus
                 if config_viewer.window and config_viewer.window.get_visible():  # pyright: ignore
@@ -858,7 +858,7 @@ def get_plugin_class():
             def configure_uninstall_view():
                 id_found = self.view_id_found(title="Flatpak Uninstaller")
                 if id_found:
-                    self.wf_helper.center_view_on_output(id_found[0], 800, 710)
+                    self.niri_helper.center_view_on_output(id_found[0], 800, 710)
 
             self.glib.timeout_add(150, configure_uninstall_view)
 
@@ -872,7 +872,7 @@ def get_plugin_class():
                 id_found = self.view_id_found(title="Flatpak Installer")
                 if id_found:
                     id = id_found[0]
-                    self.wf_helper.center_view_on_output(id, 800, 710)
+                    self.niri_helper.center_view_on_output(id, 800, 710)
 
             self.glib.timeout_add(100, configure_view_later)
 

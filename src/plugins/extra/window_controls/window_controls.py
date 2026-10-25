@@ -58,7 +58,7 @@ def get_plugin_class():
 
         def fullscreen_last_focused_view(self, *_):
             # Use the Niri-compatible helper to get the current focused ID
-            view_id = self._wf_helper.get_most_recent_focused_view()["id"]
+            view_id = self._niri_helper.get_most_recent_focused_view()["id"]
 
             if view_id:
                 # Niri equivalent: fullscreen the column containing the window.
@@ -66,10 +66,10 @@ def get_plugin_class():
                 self.ipc.fullscreen_window(view_id)
 
         def _on_close_clicked(self, vid):
-            self.glib.timeout_add_seconds(3, self.wf_helper._check_hanging_process, vid)
+            self.glib.timeout_add_seconds(3, self.niri_helper._check_hanging_process, vid)
 
         def close_last_focused_view(self, *_):
-            view_id = self._wf_helper.get_most_recent_focused_view()["id"]
+            view_id = self._niri_helper.get_most_recent_focused_view()["id"]
             self.ipc.close_view(view_id)
             self._on_close_clicked(view_id)
 

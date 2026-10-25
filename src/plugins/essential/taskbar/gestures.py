@@ -65,15 +65,15 @@ class TaskbarGestures:
         btn = controller.get_widget()
         view_id = getattr(btn, "view_id", None)
         if view_id:
-            view = self.plugin.wf_helper.is_view_valid(view_id)
+            view = self.plugin.niri_helper.is_view_valid(view_id)
             if view:
-                self.plugin.wf_helper.view_focus_effect_selected(view, 0.9, True)
+                self.plugin.niri_helper.view_focus_effect_selected(view, 0.9, True)
 
     def _on_hover_leave(self, controller):
         """Removes compositor focus effect."""
         btn = controller.get_widget()
         view_id = getattr(btn, "view_id", None)
         if view_id:
-            view = self.plugin.wf_helper.is_view_valid(view_id)
+            view = self.plugin.niri_helper.is_view_valid(view_id)
             if view:
-                self.plugin.wf_helper.view_focus_effect_selected(view, False)
+                self.plugin.niri_helper.view_focus_effect_selected(view, False)

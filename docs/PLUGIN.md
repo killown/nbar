@@ -128,7 +128,7 @@ By inheriting from `BasePlugin`, your class gains access to a comprehensive suit
 - **`self.get_data_path(filename)`**: Returns a persistent path in `~/.local/share/nbar/` for plugin data.
 - **`self.get_cache_path(filename)`**: Returns a path in the system cache directory.
 - **`self.set_keyboard_on_demand(mode=True)`**: Toggles whether the panel intercepts keyboard focus (essential for search inputs).
-- **`self.wf_helper.is_view_valid(view_id)`**: Checks if a Wayfire window/view is still active.
+- **`self.niri_helper.is_view_valid(view_id)`**: Checks if a niri window/view is still active.
 
 ### Data Validation (`self.data_helper`)
 
@@ -225,9 +225,9 @@ For plugins that run logic/services only (no visible UI).
 
 ---
 
-## 4. Wayfire IPC Events (Compositor State Monitoring)
+## 4. niri IPC Events (Compositor State Monitoring)
 
-Plugins subscribe to these events via `self.ipc_server` to monitor and react to changes in the Wayfire compositor state. These events are essential for building taskbars, pagers, and window switchers.
+Plugins subscribe to these events via `self.ipc_server` to monitor and react to changes in the niri compositor state. These events are essential for building taskbars, pagers, and window switchers.
 
 ### 4.1. View-Related Events (Window Management)
 
@@ -259,7 +259,6 @@ These events track the state of monitors and the virtual desktop layout.
 - **`output-layout-changed`**: Emitted when the physical monitor configuration changes (resolution, position, or plugging/unplugging monitors).
 - **`output-removed`**: Emitted when a monitor is disconnected.
 
-### 4.3. Input and Plugin Events
+### 4.3. Input Events
 
 - **`keyboard-modifier-state-changed`**: Emitted when modifier keys (Shift, Ctrl, Alt, Super) are pressed or released.
-- **`plugin-activation-state-changed`**: Emitted when a Wayfire plugin (like `expo` or `grid`) is activated or deactivated. This is useful for hiding the panel during full-screen overviews.

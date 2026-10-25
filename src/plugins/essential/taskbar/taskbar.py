@@ -28,7 +28,6 @@ def get_plugin_class():
     from .views import TaskbarViews
     from .gestures import TaskbarGestures
     import re
-    import gc
 
     class TitleFormatter:
         @staticmethod
@@ -39,7 +38,7 @@ def get_plugin_class():
             words = raw_title.split(" ")
             filtered = []
             for word in words:
-                clean = re.sub(r"[—]+", "", word).strip()
+                clean = word.replace("—", "").strip()
                 if clean:
                     filtered.append(clean)
 
@@ -105,11 +104,12 @@ def get_plugin_class():
                 GLib.source_remove(self._debounce_timer_id)
                 self._debounce_timer_id = None
             self._debounce_pending = False
+            # One IPC round trip: get_focused_view() calls list_views() again
+            # internally, so derive the focused window from the list we have.
             views = [
                 v for v in self.ipc.list_views() if self.view_handler.is_valid_view(v)
             ]
-            focused_view = self.ipc.get_focused_view()
-            focused_id = focused_view.get("id") if focused_view else None
+            focused_id = next((v.get("id") for v in views if v.get("is_focused")), None)
 
             if self.group_apps:
                 grouped_data = {}
@@ -207,7 +207,7 @@ def get_plugin_class():
             self.group_popover = Gtk.Popover()
             self.group_popover.set_parent(button)
             vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
-            focused_id = (self.ipc.get_focused_view() or {}).get("id")
+            focused_id = next((v.get("id") for v in views if v.get("is_focused")), None)
             for v in views:
                 row = Gtk.Button(has_frame=False)
                 row.set_halign(Gtk.Align.START)
@@ -245,42 +245,44 @@ def get_plugin_class():
                 for item in self.button_pool:
                     if item["button"] == btn:
                         item["view_id"] = "available"
-                gc.collect()
 
         def update_button(
             self, btn, view: dict, count: int = 1, is_focused: bool = False
         ) -> None:
             raw_title = view.get("title", "")
-            btn.set_tooltip_text(raw_title)
-            btn.view_id = view.get("id")
             ico = self.gtk_helper.icon_exist(view.get("app_id"))  # pyright: ignore
+
+            label_text, label_visible = None, False
+            if self.show_label:
+                if self.group_apps:
+                    if is_focused and self.show_focused_group_title:
+                        title = TitleFormatter.clean(raw_title, self.max_title_length)
+                        label_text = (
+                            f"({count}) {title}"
+                            if (count > 1 and self.show_group_count)
+                            else title
+                        )
+                        label_visible = True
+                    elif count > 1 and self.show_group_count:
+                        label_text, label_visible = f"({count})", True
+                elif not self.hide_ungrouped_titles:
+                    label_text = TitleFormatter.clean(raw_title, self.max_title_length)
+                    label_visible = True
+
+            btn.view_id = view.get("id")
+            # Compositors emit change events constantly; skip GTK property
+            # writes (which queue relayouts) when nothing visible changed.
+            state = (raw_title, ico, self.icon_size, label_text, label_visible)
+            if getattr(btn, "_nbar_state", None) == state:
+                return
+            btn._nbar_state = state  # pyright: ignore
+
+            btn.set_tooltip_text(raw_title)
             btn.icon.set_from_icon_name(ico)
             btn.icon.set_pixel_size(self.icon_size)
-            if not self.show_label:
-                btn.label.set_visible(False)
-                return
-            if self.group_apps:
-                if is_focused and self.show_focused_group_title:
-                    title = TitleFormatter.clean(raw_title, self.max_title_length)
-                    label_text = (
-                        f"({count}) {title}"
-                        if (count > 1 and self.show_group_count)
-                        else title
-                    )
-                    btn.label.set_label(label_text)
-                    btn.label.set_visible(True)
-                elif count > 1 and self.show_group_count:
-                    btn.label.set_label(f"({count})")
-                    btn.label.set_visible(True)
-                else:
-                    btn.label.set_visible(False)
-            else:
-                if self.hide_ungrouped_titles:
-                    btn.label.set_visible(False)
-                else:
-                    title = TitleFormatter.clean(raw_title, self.max_title_length)
-                    btn.label.set_label(title)
-                    btn.label.set_visible(True)
+            if label_text is not None:
+                btn.label.set_label(label_text)
+            btn.label.set_visible(label_visible)
 
         def on_view_focused(self, view: dict) -> None:
             self.view_handler.handle_focus_change(view)

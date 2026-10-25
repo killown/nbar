@@ -1,6 +1,6 @@
 # About Nbar, User Guide & Overview
 
-**Nbar** is a lightweight, modular, and highly-customizable GTK4/Libadwaita status panel built for Wayland compositors (primarily **Wayfire** and **Sway**). It aims to feel like a modern shell panel while staying fast and extensible through plugins and a single TOML-based configuration.
+**Nbar** is a lightweight, modular, and highly-customizable GTK4/Libadwaita status panel built for the **niri** Wayland compositor. It aims to feel like a modern shell panel while staying fast and extensible through plugins and a single TOML-based configuration.
 
 > This document is an expanded, user-focused **ABOUT** that extracts implementation details from the project sources and turns them into practical guidance for end users and power users.
 
@@ -10,8 +10,8 @@
 
 ### 1\. Clone & run (developer / source install)
 
-    git clone https://github.com/killown/waypanel.git
-    cd waypanel
+    git clone https://github.com/killown/nbar.git
+    cd nbar
     python run.py      # creates venv, copies defaults, installs deps, and starts the app
 
 `run.py` will detect or copy default configs, look for the GTK4 Layer Shell library (preloads `libgtk4-layer-shell.so` if found), create a per-user venv (`~/.local/share/nbar/venv`) and install `requirements.txt` there before launching `main.py`.
@@ -29,7 +29,7 @@ If you installed via packages (AUR, distro packages) follow the package instruct
 ## Architecture (high level)
 
 - **run.py:** Prepares runtime environment: finds installed package path or development path, ensures GTK layer-shell is available (exits if not), copies default config when needed, creates a user virtualenv and installs dependencies, then runs `main.py`.
-- **main.py:** Orchestrates app initialization: sets up logging, finds the active config, ensures required Wayfire plugins (when running under Wayfire), starts an IPC server thread (EventServer) and then loads the Panel application.
+- **main.py:** Orchestrates app initialization: sets up logging, finds the active config, watches the niri config, starts an IPC server thread (EventServer) and then loads the Panel application.
 - **Panel (`src/panel.py`):** The central GTK application (inherits from Adw.Application). It:
   - Loads and watches `config.toml` (single source of truth).
   - Sets monitor dimensions and creates panel windows using `CreatePanel`.
@@ -56,7 +56,7 @@ Panel windows are created using `CreatePanel` which uses `Gtk4LayerShell` to anc
 
 ## IPC & compositor integration
 
-Nbar starts an asynchronous IPC server (`EventServer`) in a separate thread to receive commands/events from external scripts. Nbar detects the active compositor (Wayfire via `WAYFIRE_SOCKET` or Sway via `SWAYSOCK`) and adapts accordingly.
+Nbar starts an asynchronous IPC server (`EventServer`) in a separate thread to receive commands/events from external scripts. Nbar talks to niri through the socket in `NIRI_SOCKET`.
 
 ## For power users / developers
 
@@ -107,7 +107,7 @@ Dispatches a system notification.
 
 Executes shell commands non-blockingly.
 
-### Wayfire IPC Events (Monitoring State)
+### niri IPC Events (Monitoring State)
 
 Plugins subscribe via `self.ipc_server` to events such as:
 

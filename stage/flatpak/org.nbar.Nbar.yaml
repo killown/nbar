@@ -24,9 +24,6 @@ finish-args:
   - --filesystem=xdg-config/nbar
   - --filesystem=~/.local/share/nbar:create
   - --filesystem=xdg-cache/nbar:create
-  - --filesystem=xdg-run/wayfire-wayland-1-.socket
-  - --filesystem=xdg-run/wayfire-wayland-2-.socket
-  - --filesystem=xdg-run/wayfire-wayland-3-.socket
   - --talk-name=org.mpris.MediaPlayer2.*
 
 build-options:
@@ -82,7 +79,7 @@ modules:
     build-commands:
       - python3 -m ensurepip
       - pip3 install --prefix=/app --no-cache-dir pip setuptools wheel
-      - pip3 install --prefix=/app --no-cache-dir aiohttp beautifulsoup4 numpy psutil pulsectl Requests SoundCard toml colorama dbus-next dbus-fast pygobject-stubs orjson cffi PyGObject watchdog pyperclip aiosqlite pillow structlog rich pygments cairosvg unidecode rapidfuzz lazy-loader distro tldextract pyamdgpuinfo wayfire
+      - pip3 install --prefix=/app --no-cache-dir aiohttp beautifulsoup4 numpy psutil pulsectl Requests SoundCard toml colorama dbus-next dbus-fast pygobject-stubs orjson cffi PyGObject watchdog pyperclip aiosqlite pillow structlog rich pygments cairosvg unidecode rapidfuzz lazy-loader distro tldextract pyamdgpuinfo
 
   - name: git
     buildsystem: simple
@@ -114,5 +111,5 @@ modules:
         chmod +x /app/bin/nbar-launcher
     sources:
       - type: git
-        url: https://github.com/killown/waypanel.git
+        url: https://github.com/killown/nbar.git
         branch: main

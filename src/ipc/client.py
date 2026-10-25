@@ -4,10 +4,10 @@ from gi.repository import GLib
 from typing import Any, Dict, Optional
 
 
-class WayfireClientIPC:
+class NiriClientIPC:
     def __init__(self, handle_event, panel_instance):
         """
-        Initialize the Wayfire IPC client for communication with the compositor.
+        Initialize the niri IPC client for communication with the compositor.
 
         Establishes an event-driven socket reader using GLib.
 
@@ -33,7 +33,7 @@ class WayfireClientIPC:
         """
         if not self.obj.ipc.is_connected():
             if self.socket_path:
-                self.wayfire_events_setup(self.socket_path)
+                self.niri_events_setup(self.socket_path)
         return True
 
     def connect_socket(self, socket_path: str) -> None:
@@ -149,7 +149,7 @@ class WayfireClientIPC:
 
         self.buffer = b""
 
-    def wayfire_events_setup(self, socket_path: str) -> None:
+    def niri_events_setup(self, socket_path: str) -> None:
         """
         Proxy method to initiate connection.
         """
