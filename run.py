@@ -281,17 +281,60 @@ def ensure_initial_setup(config) -> None:
             shutil.copytree(res_src, config.resources_dir, dirs_exist_ok=True)
 
 
-def exist_process() -> None:
-    """Terminates any existing instances of the main application."""
-    import subprocess
+def exist_process(main_py, timeout: float = 3.0) -> None:
+    """
+    Terminates any other running instance of the main application.
+
+    Instances are found by an exact match of main_py against each process's argv
+    in /proc, so unrelated processes are never touched. Each match gets SIGTERM,
+    then SIGKILL if it is still alive after the timeout. The launcher that
+    started the old instance sees SIGTERM as its child's exit status and stops
+    by itself. Waiting here also guarantees the old instance has released the
+    D-Bus name and sockets before the new one starts.
+
+    Args:
+        main_py (Path): Absolute path of the main.py the launcher runs.
+        timeout (float): Seconds to wait after SIGTERM before sending SIGKILL.
+    """
+    import os
+    import time
+    import signal
     import contextlib
 
-    with contextlib.suppress(Exception):
-        subprocess.run(
-            ["pkill", "-f", "shellown/main.py"],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
+    target = str(main_py).encode()
+    skip = {os.getpid(), os.getppid()}
+
+    def is_running(pid: int) -> bool:
+        try:
+            with open(f"/proc/{pid}/stat", "rb") as f:
+                return f.read().rsplit(b")", 1)[1].split()[0] != b"Z"
+        except (OSError, IndexError):
+            return False
+
+    pids = []
+    for entry in os.scandir("/proc"):
+        if not entry.name.isdigit() or int(entry.name) in skip:
+            continue
+        try:
+            with open(f"/proc/{entry.name}/cmdline", "rb") as f:
+                argv = f.read().split(b"\0")
+        except OSError:
+            continue
+        if target in argv:
+            pids.append(int(entry.name))
+
+    for pid in pids:
+        with contextlib.suppress(ProcessLookupError, PermissionError):
+            os.kill(pid, signal.SIGTERM)
+
+    deadline = time.monotonic() + timeout
+    while pids and time.monotonic() < deadline:
+        time.sleep(0.05)
+        pids = [pid for pid in pids if is_running(pid)]
+
+    for pid in pids:
+        with contextlib.suppress(ProcessLookupError, PermissionError):
+            os.kill(pid, signal.SIGKILL)
 
 
 def main() -> None:
@@ -341,7 +384,7 @@ def main() -> None:
     cmd = [str(config.venv_python), "-O", str(main_py)]
 
     while True:
-        exist_process()
+        exist_process(main_py)
         try:
             result = subprocess.run(cmd, check=False)
             if result.returncode == 0 or abs(result.returncode) in {2, 15}:

@@ -1,11 +1,73 @@
 import os
 import toml
 import time
+import threading
+import functools
 from pyniri import NiriSocket
 from pathlib import Path
 from typing import Any, List, Optional, Dict, Tuple, Union
 from gi.repository import Gio  # pyright: ignore
 from src.shared import config_template
+
+
+class _ConfigState:
+    """
+    Process-wide mutable state shared by every ConfigHandler bound to one file.
+
+    A panel creates one ConfigHandler for itself, one per GtkHelpers and one per
+    plugin. Keeping the parsed config, the debounce marker and the GIO file
+    monitor here means the file is parsed once and watched once, and every
+    handler reads and saves the same data instead of divergent copies.
+    """
+
+    def __init__(self) -> None:
+        self.lock = threading.RLock()
+        self.config_data: Dict[str, Any] = {}
+        self.cached_config: Optional[Dict[str, Any]] = None
+        self.last_mod_time: float = 0.0
+        self.load_successful: bool = False
+        self.config_monitor: Optional[Gio.FileMonitor] = None
+        self.first_output_name: Optional[str] = None
+        self.initialized: bool = False
+
+
+_STATES: Dict[str, _ConfigState] = {}
+_STATES_LOCK = threading.Lock()
+
+
+def _state_for(config_file: Path) -> _ConfigState:
+    """
+    Returns the shared state for a config file, creating it on first use.
+
+    Args:
+        config_file: Absolute path of the config.toml the handler manages.
+
+    Returns:
+        The single _ConfigState instance for that path.
+    """
+    key = str(config_file)
+    with _STATES_LOCK:
+        state = _STATES.get(key)
+        if state is None:
+            state = _STATES[key] = _ConfigState()
+        return state
+
+
+def _locked(method):
+    """
+    Decorator that runs a ConfigHandler method under the shared state's lock.
+
+    The lock is re-entrant, so locked methods may call each other. It keeps a
+    worker thread's save from interleaving with another thread's mutation of
+    the shared config dict.
+    """
+
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        with self._state.lock:
+            return method(self, *args, **kwargs)
+
+    return wrapper
 
 
 class ConfigHandler:
@@ -28,25 +90,74 @@ class ConfigHandler:
         self.logger = panel_instance.logger
         self.plugin_id = plugin_id
         self.panel_instance = panel_instance
-        self._cached_config: Optional[Dict[str, Any]] = None
-        self._last_mod_time: float = 0.0
         self.default_config = config_template.default_config
         self._setup_config_paths()
         self.config_file = Path(self.config_path) / "config.toml"
         self.gio_config_file = Gio.File.new_for_path(str(self.config_file))
-        self.config_monitor: Optional[Gio.FileMonitor] = None
         self.config_path: str = self.config_file.parent.as_posix()
-        self._load_successful: bool = False
-        sock = NiriSocket()
-        self.first_output_name = [i for i in sock.get_outputs().keys()][0]
-        self.config_data = self.load_config()
-        self._cached_config = self.config_data
+        self._state = _state_for(self.config_file)
+        with self._state.lock:
+            if not self._state.initialized:
+                self.config_data = self.load_config()
+                self._cached_config = self.config_data
+                self._state.initialized = True
         self._start_watcher()
 
-    def __del__(self) -> None:
-        """Clean up the GIO file monitor when the handler is destroyed."""
-        if self.config_monitor:
-            self.config_monitor.cancel()
+    @property
+    def config_data(self) -> Dict[str, Any]:
+        """The live configuration dictionary shared by all handlers of this file."""
+        return self._state.config_data
+
+    @config_data.setter
+    def config_data(self, value: Dict[str, Any]) -> None:
+        self._state.config_data = value
+
+    @property
+    def _cached_config(self) -> Optional[Dict[str, Any]]:
+        return self._state.cached_config
+
+    @_cached_config.setter
+    def _cached_config(self, value: Optional[Dict[str, Any]]) -> None:
+        self._state.cached_config = value
+
+    @property
+    def _last_mod_time(self) -> float:
+        return self._state.last_mod_time
+
+    @_last_mod_time.setter
+    def _last_mod_time(self, value: float) -> None:
+        self._state.last_mod_time = value
+
+    @property
+    def _load_successful(self) -> bool:
+        return self._state.load_successful
+
+    @_load_successful.setter
+    def _load_successful(self, value: bool) -> None:
+        self._state.load_successful = value
+
+    @property
+    def config_monitor(self) -> Optional[Gio.FileMonitor]:
+        """The single GIO monitor watching config.toml, or None before it starts."""
+        return self._state.config_monitor
+
+    @config_monitor.setter
+    def config_monitor(self, value: Optional[Gio.FileMonitor]) -> None:
+        self._state.config_monitor = value
+
+    @property
+    def first_output_name(self) -> str:
+        """
+        Name of the first niri output.
+
+        Queried from the compositor on first access and cached, so building a
+        handler does not block on a niri socket round trip.
+        """
+        state = self._state
+        if state.first_output_name is None:
+            sock = NiriSocket()
+            state.first_output_name = [i for i in sock.get_outputs().keys()][0]
+        return state.first_output_name
 
     def _on_config_file_changed(
         self,
@@ -57,7 +168,10 @@ class ConfigHandler:
     ) -> None:
         """
         Callback triggered by the GIO file monitor when config.toml changes.
-        Debounces changes using file modification time before triggering reload.
+        Debounces reloads using file modification time. Saves made through any
+        handler already updated the shared data, so only newer external edits
+        are re-read. Styles are refreshed on every event because the CSS
+        generator deduplicates identical output by hash.
         """
         if event_type in (
             Gio.FileMonitorEvent.CHANGES_DONE_HINT,
@@ -68,12 +182,12 @@ class ConfigHandler:
                 current_mod_time = os.path.getmtime(self.config_file)
                 if current_mod_time > self._last_mod_time:
                     self.reload_config()
-                    self._reload_css()
                     self._last_mod_time = current_mod_time
                 else:
                     self.logger.debug(
-                        "Change event received but ignored due to debounce."
+                        "Change event is not newer than the last save, styles only."
                     )
+                self._reload_css()
             except FileNotFoundError:
                 self.logger.warning("Config file not found during GIO change check.")
             except Exception as e:
@@ -138,6 +252,7 @@ class ConfigHandler:
                     write_back_needed = True
         return write_back_needed
 
+    @_locked
     def save_config(self) -> None:
         """Writes the current state of self.config_data to the TOML file."""
         if not self._load_successful:
@@ -157,6 +272,7 @@ class ConfigHandler:
                 level="error",
             )
 
+    @_locked
     def reload_config(self) -> None:
         """Loads the configuration from the file, overwriting the current data."""
         try:
@@ -166,6 +282,7 @@ class ConfigHandler:
         except Exception as e:
             self.logger.error(f"Error reloading configuration: {e}")
 
+    @_locked
     def load_config(self, force_reload: bool = False) -> Dict[str, Any]:
         """
         Loads the configuration from file, or uses defaults if missing/corrupt.
@@ -262,6 +379,7 @@ class ConfigHandler:
             )
             return {}
 
+    @_locked
     def initialize_config_section(
         self, section_name: str, default_config: Dict[str, Any] = {}
     ) -> None:
@@ -275,15 +393,25 @@ class ConfigHandler:
             self.reload_config()
 
     def _start_watcher(self) -> None:
-        """Starts the GIO file monitor for real-time config updates."""
-        try:
-            self.config_monitor = self.gio_config_file.monitor_file(
-                Gio.FileMonitorFlags.NONE, None
-            )
-            self.config_monitor.connect("changed", self._on_config_file_changed)
-        except Exception as e:
-            self.logger.error(f"Failed to start Gio.FileMonitor: {e}")
+        """
+        Starts the GIO file monitor for real-time config updates.
 
+        Idempotent: one monitor serves every handler of the same file, so
+        repeated calls (the panel calls this again after construction) are no-ops.
+        """
+        with self._state.lock:
+            if self._state.config_monitor is not None:
+                return
+            try:
+                monitor = self.gio_config_file.monitor_file(
+                    Gio.FileMonitorFlags.NONE, None
+                )
+                monitor.connect("changed", self._on_config_file_changed)
+                self._state.config_monitor = monitor
+            except Exception as e:
+                self.logger.error(f"Failed to start Gio.FileMonitor: {e}")
+
+    @_locked
     def set_root_setting(
         self,
         key_path: List[str],
@@ -347,6 +475,7 @@ class ConfigHandler:
                 return default_value
         return current_data
 
+    @_locked
     def update_config(self, key_path: List[str], new_value: Any) -> bool:
         """
         Updates an *existing* setting without creating new sections.
@@ -387,6 +516,7 @@ class ConfigHandler:
             )
             return False
 
+    @_locked
     def remove_root_setting(self, key: Union[str, List[str]]) -> None:
         """Removes a key from the live configuration and saves the file."""
         if not key:

@@ -139,6 +139,32 @@ class PluginLoader:
         except OSError as e:
             self.logger.warning(f"Scan error at {current_dir}: {e}")
 
+    def _declares_plugin(self, module_name):
+        """
+        Cheap source check that a scanned file can be a plugin.
+
+        Helper modules that sit next to plugins (menus, configs, managers) never
+        define get_plugin_metadata. Importing them here only to discard them
+        runs their top-level code twice, because the owning plugin imports them
+        again afterwards.
+
+        Args:
+            module_name (str): Key of the file in self.plugins_path.
+
+        Returns:
+            bool: False only when the source was read and does not mention
+                get_plugin_metadata. Any read problem returns True so the
+                regular import path decides.
+        """
+        path = self.plugins_path.get(module_name)
+        if not path:
+            return True
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                return "get_plugin_metadata" in f.read()
+        except (OSError, UnicodeDecodeError):
+            return True
+
     def _scan_all_plugin_dirs(self):
         """
         Initiates the scanning process for both system and user plugin directories.
@@ -222,6 +248,9 @@ class PluginLoader:
 
             for module_name, module_import_path in chunk:
                 if module_name in self.disabled_plugins:
+                    continue
+
+                if not self._declares_plugin(module_name):
                     continue
 
                 try:
