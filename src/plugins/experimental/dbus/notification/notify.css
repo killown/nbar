@@ -1,0 +1,144 @@
+/* ==========================================================================
+   Notifications - Full Adaptive 3D Theme (Overflow Fixed)
+   ========================================================================== */
+
+/* Panel Integration - PRESERVED UNTOUCHED */
+.notification-panel-button {
+  -gtk-icon-size: 24px;
+  border-radius: 3px;
+  background-color: var(--color-bg-deep);
+  box-shadow:
+    inset 0 0px 1px rgba(0, 0, 0, 0.4),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.25),
+    1px 1px 2px var(--shadow-dark),
+    0px 2px 2px rgba(0, 0, 0, 0.4),
+    0px 2px 1px -1px rgba(0, 0, 0, 0.3),
+    inset 0px -3px 0px rgba(0, 0, 0, 0.2);
+}
+
+/* Popover Base */
+.notify-window, 
+popover contents {
+  background-color: var(--color-bg-popover);
+  color: var(--theme-fg-label-primary);
+  border-radius: var(--radius-xl);
+  padding: 0;
+}
+
+/* Vertical Layout - Added padding to prevent child overflow clipping */
+.notify-server-vbox {
+  background-color: var(--color-bg-popover);
+  color: var(--theme-fg-label-primary);
+  padding: 20px; /* Increased padding to give hover states room */
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--theme-decoration-separator);
+  box-shadow: var(--shadow-window-float);
+}
+
+/* Individual Notification Balloon */
+.notify-client-box {
+  background-color: var(--theme-bg-view-secondary);
+  border-radius: var(--radius-xl);
+  padding: 18px;
+  margin: 4px 0 12px 0; /* Added top margin for hover breathing room */
+  border: 1px solid var(--theme-decoration-separator);
+  
+  box-shadow: 
+    inset 0 1px 1px var(--color-shadow-lighter),
+    var(--shadow-elevated);
+    
+  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.notify-client-box:hover {
+  background-color: var(--color-bg-button-hover);
+  /* Use shadow for depth instead of scale to prevent clipping */
+  box-shadow: 
+    var(--shadow-window-float),
+    inset 0 0 0 1px var(--theme-status-accent);
+}
+
+/* Typography */
+.notify-client-heading {
+  font-weight: var(--font-weight-bold);
+  font-size: 16px;
+  color: var(--theme-fg-label-primary);
+  text-shadow: 0 1px 2px var(--color-shadow-lighter);
+}
+
+.notify-client-body-label {
+  font-size: 14px;
+  color: var(--theme-fg-label-secondary);
+  line-height: 1.5;
+}
+
+.notify-client-timestamp {
+  font-size: 11px;
+  font-family: var(--font-family-monospace);
+  color: var(--theme-status-accent);
+  opacity: 0.9;
+  margin-top: 8px;
+}
+
+/* 3D Icon */
+.notification-icon {
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-small);
+  background-color: var(--color-bg-raised);
+  padding: 4px;
+  border: 1px solid var(--theme-decoration-separator);
+}
+
+/* Control Row Buttons */
+.notify-dnd-button, 
+.notify-clear-button {
+  background-color: var(--color-bg-raised);
+  color: var(--theme-fg-label-primary);
+  border-radius: var(--radius-l);
+  padding: 8px 18px;
+  border: 1px solid var(--theme-decoration-separator);
+  box-shadow: var(--shadow-medium);
+  font-weight: var(--font-weight-bold);
+  margin: 5px;
+  transition: all 200ms ease;
+}
+
+.notify-dnd-button:hover, 
+.notify-clear-button:hover {
+  background-color: var(--color-bg-button-hover);
+  border-color: var(--theme-status-accent);
+}
+
+/* Close Button (X) - Removed transform scale to prevent clipping */
+.notify-close-button {
+  margin: 0;
+  min-width: 28px;
+  min-height: 28px;
+  background: var(--color-bg-raised);
+  color: var(--theme-fg-label-primary);
+  border-radius: var(--radius-s); 
+  border: 1px solid var(--theme-decoration-separator);
+  transition: all 200ms ease;
+}
+
+.notify-close-button:hover {
+  background-color: var(--theme-status-danger);
+  color: var(--theme-fg-label-inverse);
+  border-color: var(--theme-status-danger);
+}
+
+/* Scrollbar Integration */
+.notify-window scrolledwindow {
+  background: transparent;
+}
+
+.notify-window scrollbar.vertical {
+  background-color: transparent;
+  border: none;
+  min-width: 4px;
+}
+
+.notify-window scrollbar slider {
+  background-color: var(--color-bg-transparent-active);
+  border-radius: var(--radius-xl);
+}

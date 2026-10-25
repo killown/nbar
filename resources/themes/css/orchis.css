@@ -1,0 +1,687 @@
+/* =======================================================
+   ORCHIS THEME – TOKYO NIGHT EDITION
+   Based on your :root palette, optimized for GTK 3/4.
+   ======================================================= */
+
+/* ---------- ROOT VARIABLES (as given) ---------- */
+:root {
+  /* Core Palette */
+  --color-bg-base: #24283b;
+  --color-bg-window: var(--color-bg-base);
+  --color-bg-panel: #24283bcb;
+  --color-bg-popover: #414868;
+  --color-bg-searchbar: #292e42;
+  --color-bg-box-primary: var(--color-bg-base);
+  --color-bg-box-secondary: var(--color-bg-surface);
+  --color-bg-button: #414868;
+  --color-bg-button-hover: #565f89;
+  --color-bg-button-active: #292e42;
+  --color-bg-surface: #292e42;
+  --color-bg-raised: #414868;
+  --color-bg-deep: #1f2335;
+  --color-bg-alt-row: #272b3e;
+  --color-bg-transparent-active: rgba(176, 195, 255, 0.25);
+
+  --color-vibrancy-dark-blur: var(--color-bg-base);
+  --color-vibrancy-light-blur: var(--color-bg-surface);
+  --opacity-vibrancy-bar: 1;
+
+  --color-fg-primary: #eaeeff;
+  --color-fg-secondary: #a9b1d6;
+  --color-fg-muted: #b8c3e5;
+  --color-fg-subtle: #878ea8;
+  --color-fg-inverse: #24283b;
+
+  --color-accent-blue: #7aa2f7;
+  --color-accessible-accent: #b0c3ff;
+  --color-accent-blue-dark: #7aa2f7;
+  --color-accent-gray: #565f89;
+  --color-status-success: #9ece6a;
+  --color-status-danger: #f7768e;
+  --color-status-warning: #e0af68;
+  --color-separator-line: #414868;
+  --color-shadow-hue-bleed: rgba(176, 195, 255, 0.2);
+
+  --color-status-success-bg: rgba(158, 206, 106, 0.2);
+  --color-status-danger-bg: rgba(247, 118, 142, 0.2);
+  --color-status-warning-bg: rgba(224, 175, 104, 0.2);
+
+  --color-shadow-dark: rgba(0, 0, 0, 0.4);
+  --color-shadow-medium: rgba(0, 0, 0, 0.25);
+  --color-shadow-lighter: rgba(0, 0, 0, 0.15);
+
+  /* Hierarchical Surfaces */
+  --theme-bg-view-primary: var(--color-bg-base);
+  --theme-bg-view-secondary: var(--color-bg-surface);
+  --theme-bg-view-tertiary: var(--color-bg-raised);
+  --theme-bg-view-vibrant: var(--color-bg-base);
+
+  --theme-bg-control-base: var(--color-bg-raised);
+  --theme-bg-selected-primary: var(--color-accent-blue);
+  --theme-bg-selected-inactive: var(--color-bg-raised);
+  --theme-bg-selected-secondary: var(--color-bg-transparent-active);
+  --theme-bg-text-selection: #b0c3ff40;
+
+  --theme-bg-under-page: var(--color-bg-deep);
+  --theme-bg-alternating-row: var(--color-bg-alt-row);
+  --theme-bg-find-highlight: #e0af6860;
+
+  /* Widget Backgrounds */
+  --color-bg-entry-base: var(--color-bg-surface);
+  --color-bg-entry-focus: var(--color-bg-raised);
+  --color-bg-entry-disabled: var(--color-bg-alt-row);
+  --color-bg-textview: var(--color-bg-surface);
+
+  --color-bg-button-flat: transparent;
+  --color-bg-button-flat-hover: var(--color-bg-transparent-active);
+  --color-bg-button-flat-active: var(--color-bg-transparent-active);
+  --color-bg-button-normal: var(--color-bg-raised);
+  --color-bg-button-normal-hover: var(--color-bg-button-hover);
+  --color-bg-button-normal-active: var(--color-bg-button-active);
+  --color-bg-button-suggested: var(--color-accent-blue);
+  --color-bg-button-suggested-hover: var(--color-accent-blue-dark);
+
+  --color-bg-menu-bar: var(--color-bg-surface);
+  --color-bg-menu-popup: var(--color-bg-popover);
+  --color-bg-menu-item-hover: var(--color-bg-transparent-active);
+  --color-bg-popover-content: var(--color-bg-popover);
+
+  --color-bg-list-header: var(--color-bg-raised);
+  --color-bg-tab-bar: var(--color-bg-surface);
+  --color-bg-tab-active: var(--color-bg-base);
+  --color-bg-tab-inactive: var(--color-bg-surface);
+  --color-bg-tab-hover: var(--color-bg-raised);
+  --color-bg-treeview-header: var(--color-bg-raised);
+
+  --color-bg-toggle-off: var(--color-fg-muted);
+  --color-bg-toggle-on: var(--color-accent-blue);
+  --color-bg-check-radio-box: var(--color-bg-surface);
+
+  --color-bg-scrollbar-track: transparent;
+  --color-bg-scrollbar-slider: #9aa5cecc;
+  --color-bg-scrollbar-slider-hover: #a9b1d6cc;
+
+  --color-bg-status-bar: var(--color-bg-surface);
+  --color-bg-tooltip: var(--color-bg-raised);
+
+  /* Foreground */
+  --theme-fg-label-primary: var(--color-fg-primary);
+  --theme-fg-label-secondary: var(--color-fg-secondary);
+  --theme-fg-label-tertiary: var(--color-fg-muted);
+  --theme-fg-label-quaternary: var(--color-fg-subtle);
+  --theme-fg-label-inverse: var(--color-fg-inverse);
+
+  --theme-fg-control-text: var(--color-fg-primary);
+  --theme-fg-control-text-disabled: var(--color-fg-muted);
+  --theme-fg-link: var(--color-accessible-accent);
+  --theme-fg-placeholder: var(--color-fg-subtle);
+  --theme-fg-header-text: var(--color-fg-primary);
+
+  --theme-fg-text-selected: var(--color-fg-inverse);
+  --theme-fg-text-alternate-selected: var(--color-fg-primary);
+
+  /* Decorations */
+  --theme-decoration-separator: var(--color-separator-line);
+  --theme-decoration-grid-line: #303650;
+  --theme-decoration-keyboard-focus:
+    0 0 0 2px var(--color-bg-base), 0 0 0 4px var(--color-accessible-accent),
+    0 0 8px #b0c3ff60;
+  --theme-decoration-border-control: var(--color-separator-line);
+  --color-border-entry-base: var(--color-separator-line);
+  --color-border-entry-focus: var(--color-accessible-accent);
+  --color-focus-ring: var(--color-accessible-accent);
+
+  /* Status */
+  --theme-status-accent: var(--color-accent-blue);
+  --theme-status-accent-inactive: var(--color-accent-gray);
+  --theme-status-success: var(--color-status-success);
+  --theme-status-danger: var(--color-status-danger);
+  --theme-status-warning: var(--color-status-warning);
+  --theme-status-highlight-virtual: var(--color-bg-raised);
+
+  /* Semantic Mapping */
+  --primary-bg: var(--theme-bg-view-primary);
+  --secondary-bg: var(--theme-bg-view-secondary);
+  --tertiary-bg: var(--theme-bg-view-tertiary);
+  --header-border: var(--theme-decoration-separator);
+
+  --main-text: var(--theme-fg-label-primary);
+  --soft-text: var(--theme-fg-label-secondary);
+  --calendar-other-month: var(--theme-fg-label-tertiary);
+
+  --accent-blue: var(--theme-status-accent);
+  --success-green: var(--theme-status-success);
+  --danger-red: var(--theme-status-danger);
+  --success-green-light: var(--color-status-success-bg);
+  --window-control-hover-bg: var(--color-bg-transparent-active);
+  --window-control-border-color: var(--primary-bg);
+
+  --dseg-shadow-soft: rgba(255, 255, 255, 0.1);
+  --dseg-shadow-dark: rgba(0, 0, 0, 0.7);
+
+  /* Shadows & Opacity */
+  --shadow-dark: var(--color-shadow-dark);
+  --shadow-medium: var(--color-shadow-medium);
+  --shadow-subtle-white: 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  --opacity-0: 0;
+  --opacity-08: 0.08;
+  --opacity-507: 0.507;
+  --opacity-555: 0.555;
+  --opacity-75: 0.75;
+  --opacity-15: 0.15;
+  --opacity-50: 0.5;
+  --opacity-60: 0.6;
+
+  --shadow-subtle: 0 1px 0 var(--shadow-subtle-white);
+  --shadow-elevated:
+    0 4px 10px var(--color-shadow-medium), 0 0 8px var(--color-shadow-hue-bleed);
+  --shadow-button-flat: none;
+  --shadow-control-small: none;
+  --shadow-control-small-hover: none;
+  --shadow-element-minimal: none;
+
+  --shadow-window-float:
+    0 8px 20px var(--color-shadow-dark), 0 0 15px var(--color-shadow-hue-bleed);
+  --shadow-menubar-separator: inset 0 -1px 0 var(--color-separator-line);
+
+  --shadow-neumorphic-inset-medium: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --shadow-neumorphic-outset-large: 0 2px 5px rgba(0, 0, 0, 0.5);
+  --shadow-neumorphic-press: inset 0 1px 4px rgba(0, 0, 0, 0.7);
+
+  /* Radius */
+  --radius-xs: 3px;
+  --radius-s: 6px;
+  --radius-m: 10px;
+  --radius-l: 14px;
+  --radius-xl: 18px;
+  --radius-control-default: var(--radius-s);
+
+  /* Font */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+}
+
+/* ---------- BASE WIDGET STYLES ---------- */
+* {
+  font-family: "Cantarell", "Segoe UI", sans-serif;
+  font-weight: var(--font-weight-regular);
+}
+
+/* Window & Background */
+window {
+  background-color: var(--primary-bg);
+  color: var(--main-text);
+}
+
+.background {
+  background-color: var(--primary-bg);
+  color: var(--main-text);
+}
+
+/* Headerbar / Titlebar */
+headerbar,
+.titlebar {
+  background-color: var(--secondary-bg);
+  color: var(--main-text);
+  border-bottom: 1px solid var(--header-border);
+  box-shadow: var(--shadow-subtle);
+  min-height: 44px;
+  padding: 0 8px;
+}
+
+headerbar .title {
+  font-weight: var(--font-weight-bold);
+  color: var(--main-text);
+}
+
+/* Buttons */
+button {
+  background-color: var(--color-bg-button);
+  color: var(--theme-fg-control-text);
+  border: 1px solid var(--theme-decoration-border-control);
+  border-radius: var(--radius-control-default);
+  padding: 4px 12px;
+  min-height: 28px;
+  transition:
+    background 150ms ease,
+    box-shadow 150ms ease;
+}
+
+button:hover {
+  background-color: var(--color-bg-button-hover);
+  box-shadow: var(--shadow-control-small-hover);
+}
+
+button:active {
+  background-color: var(--color-bg-button-active);
+  box-shadow: var(--shadow-neumorphic-press);
+}
+
+button:disabled {
+  color: var(--theme-fg-control-text-disabled);
+  background-color: var(--color-bg-entry-disabled);
+  border-color: var(--color-bg-entry-disabled);
+}
+
+button.suggested-action {
+  background-color: var(--color-bg-button-suggested);
+  border-color: var(--color-accent-blue);
+  color: var(--theme-fg-text-selected);
+}
+
+button.suggested-action:hover {
+  background-color: var(--color-bg-button-suggested-hover);
+}
+
+button.destructive-action {
+  background-color: var(--color-status-danger);
+  border-color: var(--color-status-danger);
+  color: var(--theme-fg-text-selected);
+}
+
+button.destructive-action:hover {
+  background-color: #e05a7a; /* darken */
+}
+
+button.flat {
+  background-color: var(--color-bg-button-flat);
+  border-color: transparent;
+}
+
+button.flat:hover {
+  background-color: var(--color-bg-button-flat-hover);
+}
+
+button.flat:active {
+  background-color: var(--color-bg-button-flat-active);
+}
+
+/* Entries */
+entry {
+  background-color: var(--color-bg-entry-base);
+  color: var(--theme-fg-control-text);
+  border: 1px solid var(--color-border-entry-base);
+  border-radius: var(--radius-control-default);
+  padding: 4px 8px;
+  min-height: 28px;
+  transition:
+    border 150ms ease,
+    box-shadow 150ms ease;
+}
+
+entry:focus {
+  border-color: var(--color-border-entry-focus);
+  box-shadow: 0 0 0 2px var(--color-focus-ring);
+}
+
+entry:disabled {
+  background-color: var(--color-bg-entry-disabled);
+  color: var(--theme-fg-control-text-disabled);
+}
+
+entry selection {
+  background-color: var(--theme-bg-text-selection);
+  color: var(--theme-fg-text-selected);
+}
+
+/* Text View */
+textview {
+  background-color: var(--color-bg-textview);
+  color: var(--main-text);
+}
+
+textview text {
+  background-color: var(--color-bg-textview);
+  color: var(--main-text);
+}
+
+textview text selection {
+  background-color: var(--theme-bg-text-selection);
+  color: var(--theme-fg-text-selected);
+}
+
+/* Combobox */
+combobox {
+  background-color: var(--color-bg-entry-base);
+  border: 1px solid var(--color-border-entry-base);
+  border-radius: var(--radius-control-default);
+  padding: 0 4px;
+}
+
+combobox button {
+  background-color: transparent;
+  border: none;
+  padding: 0 8px;
+  min-height: 28px;
+}
+
+combobox button:hover {
+  background-color: var(--color-bg-button-flat-hover);
+}
+
+/* Spinbutton */
+spinbutton {
+  background-color: var(--color-bg-entry-base);
+  border: 1px solid var(--color-border-entry-base);
+  border-radius: var(--radius-control-default);
+}
+
+spinbutton button {
+  background-color: transparent;
+  border: none;
+  min-height: 20px;
+  padding: 0 6px;
+}
+
+spinbutton button:hover {
+  background-color: var(--color-bg-button-flat-hover);
+}
+
+/* Check & Radio Buttons */
+checkbutton,
+radiobutton {
+  background-color: var(--color-bg-check-radio-box);
+  color: var(--main-text);
+}
+
+checkbutton check,
+radiobutton radio {
+  background-color: var(--color-bg-check-radio-box);
+  border: 1px solid var(--color-border-entry-base);
+  border-radius: var(--radius-xs);
+  min-width: 16px;
+  min-height: 16px;
+  padding: 0;
+}
+
+checkbutton check:checked,
+radiobutton radio:checked {
+  background-color: var(--color-accent-blue);
+  border-color: var(--color-accent-blue);
+}
+
+checkbutton check:disabled,
+radiobutton radio:disabled {
+  background-color: var(--color-bg-entry-disabled);
+  border-color: var(--color-bg-entry-disabled);
+}
+
+/* Progressbar */
+progressbar {
+  background-color: var(--color-bg-surface);
+  border-radius: var(--radius-s);
+}
+
+progressbar trough {
+  background-color: var(--color-bg-surface);
+  border-radius: var(--radius-s);
+  min-height: 6px;
+}
+
+progressbar progress {
+  background-color: var(--color-accent-blue);
+  border-radius: var(--radius-s);
+}
+
+/* Scale (slider) */
+scale {
+  background-color: transparent;
+}
+
+scale trough {
+  background-color: var(--color-bg-surface);
+  border-radius: var(--radius-s);
+  min-height: 4px;
+}
+
+scale slider {
+  background-color: var(--color-fg-primary);
+  border: 1px solid var(--color-bg-raised);
+  border-radius: 50%;
+  min-width: 16px;
+  min-height: 16px;
+}
+
+scale slider:hover {
+  background-color: var(--color-accessible-accent);
+  border-color: var(--color-accessible-accent);
+}
+
+/* Scrollbar */
+scrollbar {
+  background-color: var(--color-bg-scrollbar-track);
+}
+
+scrollbar slider {
+  background-color: var(--color-bg-scrollbar-slider);
+  border-radius: var(--radius-l);
+  min-width: 6px;
+  min-height: 6px;
+}
+
+scrollbar slider:hover {
+  background-color: var(--color-bg-scrollbar-slider-hover);
+}
+
+scrollbar slider:active {
+  background-color: var(--color-fg-primary);
+}
+
+/* Menus & Popovers */
+menubar {
+  background-color: var(--color-bg-menu-bar);
+  color: var(--main-text);
+  box-shadow: var(--shadow-menubar-separator);
+}
+
+menubar menuitem:hover {
+  background-color: var(--color-bg-menu-item-hover);
+}
+
+menu,
+popover {
+  background-color: var(--color-bg-menu-popup);
+  color: var(--main-text);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-window-float);
+  padding: 4px 0;
+}
+
+menu menuitem,
+popover menuitem {
+  padding: 4px 12px;
+}
+
+menu menuitem:hover,
+popover menuitem:hover {
+  background-color: var(--color-bg-menu-item-hover);
+}
+
+menu separator,
+popover separator {
+  background-color: var(--theme-decoration-separator);
+  margin: 4px 0;
+}
+
+/* Tooltips */
+tooltip {
+  background-color: var(--color-bg-tooltip);
+  color: var(--main-text);
+  border-radius: var(--radius-s);
+  box-shadow: var(--shadow-elevated);
+  padding: 4px 8px;
+}
+
+/* Notebook (tabs) */
+notebook > header {
+  background-color: var(--color-bg-tab-bar);
+  border-bottom: 1px solid var(--theme-decoration-separator);
+}
+
+notebook > header tab {
+  background-color: var(--color-bg-tab-inactive);
+  color: var(--soft-text);
+  padding: 4px 12px;
+  border-radius: var(--radius-s) var(--radius-s) 0 0;
+  border: 1px solid transparent;
+  margin: 2px 0 0 2px;
+}
+
+notebook > header tab:hover {
+  background-color: var(--color-bg-tab-hover);
+}
+
+notebook > header tab:checked {
+  background-color: var(--color-bg-tab-active);
+  color: var(--main-text);
+  border-color: var(--theme-decoration-separator);
+  border-bottom-color: var(--color-bg-tab-active);
+}
+
+/* List / Tree Views */
+list,
+treeview {
+  background-color: var(--primary-bg);
+  color: var(--main-text);
+}
+
+list row,
+treeview row {
+  background-color: var(--primary-bg);
+  padding: 4px 8px;
+}
+
+list row:selected,
+treeview row:selected {
+  background-color: var(--theme-bg-selected-primary);
+  color: var(--theme-fg-text-selected);
+}
+
+list row:selected:backdrop,
+treeview row:selected:backdrop {
+  background-color: var(--theme-bg-selected-inactive);
+}
+
+list row:hover,
+treeview row:hover {
+  background-color: var(--theme-bg-selected-secondary);
+}
+
+list row:alternate,
+treeview row:alternate {
+  background-color: var(--theme-bg-alternating-row);
+}
+
+treeview header button {
+  background-color: var(--color-bg-treeview-header);
+  color: var(--soft-text);
+  border: none;
+  border-radius: 0;
+  padding: 4px 8px;
+  box-shadow: inset 0 -1px 0 var(--theme-decoration-separator);
+}
+
+treeview header button:hover {
+  background-color: var(--color-bg-button-hover);
+}
+
+/* Statusbar */
+statusbar {
+  background-color: var(--color-bg-status-bar);
+  color: var(--soft-text);
+  border-top: 1px solid var(--theme-decoration-separator);
+}
+
+/* Links */
+link {
+  color: var(--theme-fg-link);
+}
+
+link:visited {
+  color: var(--color-accessible-accent);
+}
+
+/* -------------- ORCHIS SPECIFIC TOUCHES -------------- */
+
+/* Compact spacing – Orchis style */
+headerbar button,
+toolbar button {
+  padding: 2px 10px;
+}
+
+headerbar entry {
+  margin: 4px 0;
+}
+
+window.background > box.vertical > headerbar:first-child {
+  border-radius: var(--radius-m) var(--radius-m) 0 0;
+}
+
+/* Floating shadow for dialogs */
+window.dialog {
+  box-shadow: var(--shadow-window-float);
+  border-radius: var(--radius-l);
+}
+
+/* Toggle buttons */
+button.toggle:checked {
+  background-color: var(--color-accent-blue);
+  color: var(--theme-fg-text-selected);
+  border-color: var(--color-accent-blue);
+}
+
+button.toggle:checked:hover {
+  background-color: var(--color-accent-blue-dark);
+}
+
+/* Toolbar */
+toolbar {
+  background-color: var(--secondary-bg);
+  padding: 4px;
+  border-bottom: 1px solid var(--theme-decoration-separator);
+}
+
+/* Stack switcher */
+stackswitcher button {
+  background-color: transparent;
+  border: none;
+  border-radius: var(--radius-s);
+  padding: 4px 12px;
+}
+
+stackswitcher button:checked {
+  background-color: var(--theme-bg-selected-primary);
+  color: var(--theme-fg-text-selected);
+}
+
+/* Calendar */
+calendar {
+  background-color: var(--primary-bg);
+  color: var(--main-text);
+  border: 1px solid var(--theme-decoration-separator);
+  border-radius: var(--radius-s);
+}
+
+calendar:selected {
+  background-color: var(--theme-bg-selected-primary);
+  color: var(--theme-fg-text-selected);
+}
+
+calendar:indeterminate {
+  color: var(--calendar-other-month);
+}
+
+/* Scrollbar overlay (Orchis modern style) */
+scrollbar.overlay-indicator slider {
+  background-color: var(--color-bg-scrollbar-slider);
+}
+
+scrollbar.overlay-indicator slider:hover {
+  background-color: var(--color-bg-scrollbar-slider-hover);
+}
+
+/* ========================================================
+   END OF ORCHIS THEME – TOKYO NIGHT EDITION
+   ======================================================== */

@@ -1,0 +1,361 @@
+/* Flux - Rust theme
+ * Based on XP New Dark structure, using Rust Foundation palette.
+ * Loaded on top of src/ui/style.css. */
+
+/* ── Rust Foundation palette ── */
+@define-color rust_dark_blue  #1E2650;
+@define-color rust_orange     #D34516;
+@define-color rust_blue       #28607F;
+@define-color rust_silver     #67737A;
+@define-color rust_green      #61784D;
+
+@define-color rust_dark_blue_light  #2a3566;
+@define-color rust_dark_blue_dark   #151c3d;
+@define-color rust_orange_light     #e85a2a;
+@define-color rust_orange_dark      #b83a10;
+@define-color rust_blue_light       #357a9e;
+@define-color rust_blue_dark        #1e4a63;
+@define-color rust_silver_light     #8a959b;
+@define-color rust_silver_dark      #4d575c;
+
+@define-color rust_white            #ffffff;
+@define-color rust_off_white        #f5f6f8;
+@define-color rust_gray_100         #e8eaed;
+@define-color rust_gray_200         #d1d5db;
+@define-color rust_gray_300         #b0b7bf;
+@define-color rust_gray_400         #8a939c;
+@define-color rust_gray_500         #67737A;
+@define-color rust_gray_600         #4d575c;
+@define-color rust_gray_700         #343b40;
+@define-color rust_gray_800         #1e2328;
+@define-color rust_black            #0d0f12;
+
+/* ── Libadwaita named colors ── */
+@define-color window_bg_color      @rust_dark_blue;
+@define-color window_fg_color      @rust_off_white;
+@define-color view_bg_color        @rust_dark_blue;
+@define-color view_fg_color        @rust_off_white;
+@define-color headerbar_bg_color   transparent;
+@define-color headerbar_fg_color   @rust_off_white;
+@define-color sidebar_bg_color     @rust_dark_blue_dark;
+@define-color sidebar_fg_color     @rust_off_white;
+@define-color card_bg_color        @rust_dark_blue_light;
+@define-color card_fg_color        @rust_off_white;
+@define-color dialog_bg_color      @rust_dark_blue_light;
+@define-color dialog_fg_color      @rust_off_white;
+@define-color popover_bg_color     @rust_dark_blue_light;
+@define-color popover_fg_color     @rust_off_white;
+@define-color theme_fg_color       @rust_off_white;
+@define-color theme_bg_color       @rust_dark_blue;
+@define-color theme_base_color     @rust_dark_blue_light;
+@define-color theme_text_color     @rust_off_white;
+
+@define-color accent_color         @rust_orange;
+@define-color accent_bg_color      @rust_orange;
+@define-color accent_fg_color      @rust_white;
+
+@define-color destructive_color    @rust_orange;
+@define-color destructive_bg_color @rust_orange;
+@define-color destructive_fg_color @rust_white;
+
+/* ── os-dark slot remaps ── */
+@define-color red_3     @rust_orange;
+@define-color orange_3  @rust_orange_light;
+@define-color green_4   @rust_green;
+@define-color blue_3    @rust_blue;
+@define-color purple_3  @rust_dark_blue_light;
+@define-color dark_2    @rust_silver;
+
+/* ================================================= */
+/* ===== XP NEW DARK STRUCTURE + RUST PALETTE ====== */
+/* ================================================= */
+
+:root {
+  /* ================================================= */
+  /* ==== CORE PALETTE (Rust Foundation Adapted) ==== */
+  /* ================================================= */
+
+  --color-bg-base: #1e2650; /* rust_dark_blue */
+  --color-bg-window: var(--color-bg-base);
+  --color-bg-panel: rgba(30, 38, 80, 0.9);
+  --color-bg-popover: #2a3566; /* rust_dark_blue_light */
+  --color-bg-searchbar: #252d5a; /* between base and light */
+  --color-bg-box-primary: var(--color-bg-surface);
+  --color-bg-box-secondary: var(--color-bg-raised);
+  --color-bg-button: #2a3566; /* rust_dark_blue_light */
+  --color-bg-button-hover: #353f75; /* lighter still */
+  --color-bg-button-active: #1f2750; /* darker */
+  --color-bg-surface: #252d5a; /* mid-tone surface */
+  --color-bg-raised: #2a3566; /* rust_dark_blue_light */
+  --color-bg-deep: #151c3d; /* rust_dark_blue_dark */
+  --color-bg-alt-row: #1a2248; /* slightly lighter than base */
+  --color-bg-transparent-active: rgba(211, 69, 22, 0.2); /* rust_orange @ 20% */
+
+  --color-vibrancy-dark-blur: rgba(30, 38, 80, 0.9);
+  --color-vibrancy-light-blur: rgba(42, 53, 102, 0.9);
+  --opacity-vibrancy-bar: 0.9;
+
+  --color-fg-primary: #f5f6f8; /* rust_off_white */
+  --color-fg-secondary: #e8eaed; /* rust_gray_100 */
+  --color-fg-muted: #b0b7bf; /* rust_gray_300 */
+  --color-fg-subtle: #8a939c; /* rust_gray_400 */
+  --color-fg-inverse: #0d0f12; /* rust_black - for bright backgrounds */
+  --color-fg-link-accessible: #e85a2a; /* rust_orange_light - accessible on dark blue */
+
+  --color-accent-blue: #d34516; /* rust_orange (accent) */
+  --color-accent-blue-dark: #b83a10; /* rust_orange_dark */
+  --color-accent-gray: #4d575c; /* rust_silver_dark */
+  --color-status-success: #61784d; /* rust_green */
+  --color-status-danger: #d34516; /* rust_orange */
+  --color-status-warning: #e85a2a; /* rust_orange_light */
+  --color-separator-line: #353f75; /* lighter blue for visibility */
+  --color-shadow-hue-bleed: rgba(211, 69, 22, 0.12); /* rust orange glow */
+
+  --color-status-success-bg: rgba(97, 120, 77, 0.2);
+  --color-status-danger-bg: rgba(211, 69, 22, 0.2);
+  --color-status-warning-bg: rgba(232, 90, 42, 0.2);
+
+  --color-shadow-dark: rgba(13, 15, 18, 0.6); /* rust_black-ish */
+  --color-shadow-medium: rgba(13, 15, 18, 0.4);
+  --color-shadow-lighter: rgba(13, 15, 18, 0.2);
+
+  /* ================================================= */
+  /* ===== HIERARCHICAL UI SURFACES (BACKGROUNDS) ==== */
+  /* ================================================= */
+
+  --theme-bg-view-primary: var(--color-bg-base);
+  --theme-bg-view-secondary: var(--color-bg-surface);
+  --theme-bg-view-tertiary: var(--color-bg-raised);
+  --theme-bg-view-vibrant: var(--color-vibrancy-dark-blur);
+
+  --theme-bg-control-base: var(--color-bg-raised);
+  --theme-bg-selected-primary: var(--color-accent-blue);
+  --theme-bg-selected-inactive: var(--color-bg-raised);
+  --theme-bg-selected-secondary: var(--color-bg-transparent-active);
+  --theme-bg-text-selection: #d3451680;
+
+  --theme-bg-under-page: var(--color-bg-deep);
+  --theme-bg-alternating-row: var(--color-bg-alt-row);
+  --theme-bg-find-highlight: #d3451680;
+  --theme-bg-acrylic-backdrop: var(--color-vibrancy-dark-blur);
+
+  /* ================================================= */
+  /* ==== ADVANCED GTK/WIDGET BACKGROUNDS ============ */
+  /* ================================================= */
+
+  --color-bg-entry-base: var(--color-bg-surface);
+  --color-bg-entry-focus: var(--color-bg-raised);
+  --color-bg-entry-disabled: var(--color-bg-alt-row);
+  --color-bg-textview: var(--color-bg-surface);
+
+  --color-bg-button-flat: transparent;
+  --color-bg-button-flat-hover: var(--color-bg-transparent-active);
+  --color-bg-button-flat-active: var(--color-bg-button-active);
+  --color-bg-button-normal: var(--color-bg-raised);
+  --color-bg-button-normal-hover: var(--color-bg-button-hover);
+  --color-bg-button-normal-active: var(--color-bg-button-active);
+  --color-bg-button-suggested: var(--color-accent-blue);
+  --color-bg-button-suggested-hover: var(--color-accent-blue-dark);
+
+  --color-bg-menu-bar: var(--color-bg-surface);
+  --color-bg-menu-popup: var(--color-bg-popover);
+  --color-bg-menu-item-hover: var(--color-bg-transparent-active);
+  --color-bg-popover-content: var(--color-bg-popover);
+
+  --color-bg-list-header: var(--color-bg-raised);
+  --color-bg-tab-bar: var(--color-bg-surface);
+  --color-bg-tab-active: var(--color-bg-raised);
+  --color-bg-tab-inactive: var(--color-bg-surface);
+  --color-bg-tab-hover: var(--color-bg-raised);
+  --color-bg-treeview-header: var(--color-bg-raised);
+
+  --color-bg-toggle-off: var(--color-fg-muted);
+  --color-bg-toggle-on: var(--color-accent-blue);
+  --color-bg-check-radio-box: var(--color-bg-surface);
+
+  --color-bg-scrollbar-track: transparent;
+  --color-bg-scrollbar-slider: #b0b7bfcc;
+  --color-bg-scrollbar-slider-hover: #e8eaedcc;
+
+  --color-bg-status-bar: var(--color-bg-surface);
+  --color-bg-tooltip: var(--color-bg-raised);
+
+  /* ================================================= */
+  /* ======== FOREGROUND ELEMENTS (TEXT & ICONS) ===== */
+  /* ================================================= */
+
+  --theme-fg-label-primary: var(--color-fg-primary);
+  --theme-fg-label-secondary: var(--color-fg-secondary);
+  --theme-fg-label-tertiary: var(--color-fg-muted);
+  --theme-fg-label-quaternary: var(--color-fg-subtle);
+  --theme-fg-label-inverse: var(--color-fg-inverse);
+
+  --theme-fg-control-text: var(--color-fg-primary);
+  --theme-fg-control-text-disabled: var(--color-fg-muted);
+  --theme-fg-link: var(--color-fg-link-accessible);
+  --theme-fg-placeholder: var(--color-fg-muted);
+  --theme-fg-header-text: var(--color-fg-primary);
+
+  --theme-fg-text-selected: var(--color-fg-inverse);
+  --theme-fg-text-alternate-selected: var(--color-fg-primary);
+
+  /* ================================================= */
+  /* ============= DECORATION & SEPARATORS =========== */
+  /* ================================================= */
+
+  --theme-decoration-separator: var(--color-separator-line);
+  --theme-decoration-grid-line: #2a3566;
+  --theme-decoration-keyboard-focus:
+    0 0 0 2px var(--color-bg-base), 0 0 0 4px var(--color-fg-link-accessible);
+  --theme-decoration-border-control: var(--color-separator-line);
+  --color-border-entry-base: var(--color-separator-line);
+  --color-border-entry-focus: var(--color-accent-blue);
+  --color-focus-ring: var(--color-fg-link-accessible);
+
+  /* ================================================= */
+  /* =========== SYSTEM ACCENT/STATUS COLORS ========= */
+  /* ================================================= */
+
+  --theme-status-accent: var(--color-accent-blue);
+  --theme-status-accent-inactive: var(--color-accent-gray);
+  --theme-status-success: var(--color-status-success);
+  --theme-status-danger: var(--color-status-danger);
+  --theme-status-warning: var(--color-status-warning);
+  --theme-status-highlight-virtual: var(--color-bg-raised);
+
+  /* ================================================= */
+  /* ====== SEMANTIC MAPPING (USED BY BASE CSS) ====== */
+  /* ================================================= */
+
+  --primary-bg: var(--theme-bg-view-primary);
+  --secondary-bg: var(--theme-bg-view-secondary);
+  --tertiary-bg: var(--theme-bg-view-tertiary);
+  --header-border: var(--theme-decoration-separator);
+
+  --main-text: var(--theme-fg-label-primary);
+  --soft-text: var(--theme-fg-label-secondary);
+  --calendar-other-month: var(--theme-fg-label-tertiary);
+
+  --accent-blue: var(--theme-status-accent);
+  --success-green: var(--theme-status-success);
+  --danger-red: var(--theme-status-danger);
+
+  --success-green-light: var(--color-status-success-bg);
+  --window-control-hover-bg: var(--theme-bg-control-base);
+  --window-control-border-color: var(--primary-bg);
+
+  --dseg-shadow-soft: rgba(13, 15, 18, 0.9);
+  --dseg-shadow-dark: rgba(13, 15, 18, 0.9);
+
+  /* ================================================= */
+  /* =============== SHADOWS AND OPACITY ============= */
+  /* ================================================= */
+
+  --shadow-dark: rgba(13, 15, 18, 0.6);
+  --shadow-medium: rgba(13, 15, 18, 0.4);
+  --shadow-subtle-white: rgba(245, 246, 248, 0.08) 0px 2px 4px;
+
+  --opacity-0: 0;
+  --opacity-08: 0.08;
+  --opacity-507: 0.507;
+  --opacity-555: 0.555;
+  --opacity-75: 0.75;
+  --opacity-15: 0.15;
+  --opacity-50: 0.5;
+  --opacity-60: 0.6;
+
+  --shadow-subtle: rgba(13, 15, 18, 0.2) 0px 2px 4px;
+  --shadow-elevated:
+    0 4px 8px var(--shadow-dark), 0 0 6px var(--color-shadow-hue-bleed);
+  --shadow-button-flat: none;
+  --shadow-control-small: none;
+  --shadow-control-small-hover: none;
+  --shadow-element-minimal: none;
+
+  --shadow-window-float:
+    0 8px 16px var(--shadow-dark), 0 0 10px var(--color-shadow-hue-bleed);
+  --shadow-menubar-separator: inset 0 -1px 0 var(--color-separator-line);
+
+  --shadow-neumorphic-inset-medium: inset 0 0 0 1px rgba(245, 246, 248, 0.04);
+  --shadow-neumorphic-outset-large: 0 2px 5px rgba(13, 15, 18, 0.6);
+  --shadow-neumorphic-press: inset 0 1px 4px rgba(13, 15, 18, 0.7);
+
+  /* ================================================= */
+  /* =========== CUSTOM GEOMETRY & EFFECTS =========== */
+  /* ================================================= */
+
+  /* WINDOW TITLE CONTENT SHAPE & SHADOW */
+  --radius-title-content: 5px;
+  --shadow-title-inset-light: inset 1px 1px 3px rgba(245, 246, 248, 0.05);
+  --shadow-title-inset-dark: inset -1px -1px 3px rgba(13, 15, 18, 0.7);
+
+  /* WINDOW CONTROLS SHAPE & SIZE */
+  --radius-window-control: 3px;
+  --padding-window-control-vertical: 3px;
+  --padding-window-control-horizontal: 8px;
+
+  /* CLOCK/MONOSPACE TEXT EFFECTS */
+  --shadow-clock-inset: inset 0 0 3px rgba(13, 15, 18, 0.9);
+  --shadow-clock-border-highlight: 0 0 0 1px rgba(245, 246, 248, 0.08);
+  --shadow-clock-drop: 0 1px 2px rgba(13, 15, 18, 0.5);
+  --shadow-clock-text-glow: 0 0 1px var(--soft-text);
+  --shadow-clock-text-haze: 0 0 3px rgba(211, 69, 22, 0.3);
+
+  /* ================================================= */
+  /* ================== FONT VARIABLES =============== */
+  /* ================================================= */
+
+  --radius-xs: 3px;
+  --radius-s: 5px;
+  --radius-m: 8px;
+  --radius-l: 12px;
+  --radius-xl: 16px;
+  --radius-control-default: var(--radius-s);
+  --radius-control-circular: 50%;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  /* ── Flux palette variables (preserved) ── */
+  --border-color: alpha(@rust_off_white, 0.1);
+  --disabled-opacity: 0.4;
+  --shadow: rgba(13, 15, 18, 0.6);
+  --shadow-hover: rgba(13, 15, 18, 0.75);
+  --font-main: "Inter", "Helvetica Neue", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
+  --color-fg: @rust_off_white;
+  --color-window-bg: @rust_dark_blue;
+  --color-window-fg: @rust_off_white;
+  --color-card-bg: @rust_dark_blue_light;
+  --color-sidebar-bg: @rust_dark_blue_dark;
+  --color-popover-bg: @rust_dark_blue_light;
+  --color-popover-fg: @rust_off_white;
+  --color-headerbar-bg: @rust_dark_blue;
+  --color-headerbar-fg: @rust_off_white;
+
+  --color-accent: @rust_orange;
+  --color-accent-fg: @rust_white;
+  --color-accent-text: @rust_orange;
+
+  --color-danger: @rust_orange;
+  --color-warn: @rust_orange_light;
+  --color-success: @rust_green;
+  --color-git-mod: @rust_blue;
+  --color-git-staged: @rust_dark_blue_light;
+  --color-git-untracked: @rust_silver;
+
+  letter-spacing: 0px;
+}
+
+/* ── Structural overrides ── */
+headerbar {
+  background-color: transparent;
+  background-image: none;
+  box-shadow: none;
+  border: none;
+}
+
+.selection-status {
+  background-color: @rust_dark_blue_dark;
+}
