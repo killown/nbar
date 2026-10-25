@@ -44,11 +44,9 @@ class TaskbarUI:
             if orientation == Gtk.Orientation.HORIZONTAL
             else Gtk.PolicyType.NEVER
         )
-        v_policy = (
-            Gtk.PolicyType.AUTOMATIC
-            if orientation == Gtk.Orientation.VERTICAL
-            else Gtk.PolicyType.NEVER
-        )
+        # NEVER makes the ScrolledWindow report the child's minimum height, so
+        # the panel window grows to fit the buttons instead of clipping them.
+        v_policy = Gtk.PolicyType.NEVER
 
         self.plugin.scrolled_window.set_policy(h_policy, v_policy)
 

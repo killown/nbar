@@ -42,6 +42,10 @@ class DockManager:
             self.p.logic.on_left_click,
             app_cmd,
         )
+        icon_box = button.get_child()
+        icon = icon_box.get_first_child() if icon_box else None
+        if isinstance(icon, self.p.gtk.Image):
+            icon.set_pixel_size(self.p.icon_size)
         self.p.gtk_helper.add_cursor_effect(button)
         button.app_name = app_name
         button.app_config = app_data

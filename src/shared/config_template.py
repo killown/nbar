@@ -1,6 +1,6 @@
 # NOTE: If using main_icon and fallback_main_icons, include the icons in the
 # template to ensure they appear during the initial setup.
-# The dockbar configuration template must not contain app template examples;
+# The dockbar configuration template must not contain app template examples,
 # including them will prevent users from unpinning apps from the dockbar.
 
 default_config = {
@@ -57,6 +57,7 @@ default_config = {
                 "from covering it and resizing the available desktop area."
             ),
             "width_hint": "The width (in pixels) of this horizontal panel, matched to the primary output width.",
+            "height": 32.0,
             "height_hint": "The fixed height (in pixels) of this horizontal panel.",
         },
         "left": {

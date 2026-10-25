@@ -39,9 +39,9 @@
   box-shadow:
     inset 0 1.5px 0 rgba(255, 255, 255, 0.12),  /* Specular rim */
     inset 0 -1.5px 2px rgba(0, 0, 0, 0.4),      /* Recess shadow */
-    0 0.5px 0 rgba(255, 255, 255, 0.06),       /* Surface highlight */
-    0 3px 6px rgba(0, 0, 0, 0.5),              /* Grounding shadow */
-    0 0 4px var(--shadow-medium);              /* Blue bleed */
+    0 0.5px 0 rgba(255, 255, 255, 0.06),        /* Surface highlight */
+    0 3px 6px rgba(0, 0, 0, 0.5),               /* Grounding shadow */
+    0 0 4px var(--shadow-medium);               /* Blue bleed */
 
   transition: all 180ms var(--anim-standard);
 }
@@ -88,3 +88,14 @@
     0 1px 0 rgba(255, 255, 255, 0.1);
   transition-duration: 50ms;
 }
+
+/* ==========================================================================
+   Popovers - Fully Opaque
+   ========================================================================== */
+
+popover,
+.popover,
+menu,
+.menu,
+.tooltip {
+  background-color: var(--color-
