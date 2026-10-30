@@ -8,7 +8,7 @@ def get_plugin_metadata(_):
         "version": "1.0.0",
         "enabled": True,
         "index": 10,
-        "container": "top-panel-systray",
+        "container": "right-panel-center",
         "deps": ["css_generator"],
         "description": about,
     }
