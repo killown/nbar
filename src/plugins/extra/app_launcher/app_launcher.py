@@ -521,7 +521,7 @@ def get_plugin_class():
                 if control_center:
                     control_center.do_activate()
             elif action == "Compositor":
-                self.launch_config_viewer()
+                self.subprocess.Popen(["nirimod"])
 
             if self.popover_launcher:
                 self.popover_launcher.popdown()
